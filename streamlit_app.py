@@ -8,7 +8,7 @@ add_page_title()
 show_pages(
     [
         Page("streamlit_app.py", "Game Theory Analyzer", "🏠"),
-        Section(name = "Betting Strategies"),
+        Section(name = "Roulette Betting Strategies"),
         Page("pages/martingale.py", "Martingale System", "📖"),
         Page("pages/reverse_martingale.py", "Reverse Martingale System", "📖"),
         Page("pages/dalembert.py", "D'Alembert System", "📖")
