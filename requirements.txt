@@ -3,3 +3,4 @@ st-pages
 pandas
 numpy
 matplotlib
+scikit-learn
