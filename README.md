@@ -1,5 +1,5 @@
 # GameTheoryAnalysis
-Web App that simulates strategies for popular casino games, visualizing their returns
+Web App that simulates strategies for popular casino games, visualizing their returns and optimizing parameters.
 ## Team Members
 1. Elvin Li
 2. Nicholas Tran
