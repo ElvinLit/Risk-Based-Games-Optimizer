@@ -28,14 +28,15 @@ def martingale(initial_balance, num_plays, initial_bet, preference):
     Returns:
         int or float: end amount
     """
-    choices = ['Red', 'Black', 'Green']
+    choices = ['red', 'black', 'green']
     weights = [18/38, 18/38, 2/38]
     
     balance = initial_balance
     bet = initial_bet
+    pref = preference.lower()
     for _ in range(num_plays):
         outcome = random.choices(choices, weights)[0]
-        if outcome == preference:
+        if outcome == pref:
             balance += bet
             bet = initial_bet
         else:
