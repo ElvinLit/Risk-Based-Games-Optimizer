@@ -35,7 +35,7 @@ def dataframe_conversion(samples):
     """
     return pd.DataFrame(samples, columns=['Balance'])
 
-def frequency_plot(df, initial_balance, repeats):
+def frequency_plot(df, initial_balance, repeats, graph_width):
     """
     Creates a matplotlib plot that visualizes the returns based on user input
     Args:
@@ -50,8 +50,8 @@ def frequency_plot(df, initial_balance, repeats):
     fig, ax = plt.subplots(figsize=(4,3))
 
     # Setting range for our graph
-    lower_range = df['Balance'].mean() - 500
-    upper_range = df['Balance'].mean() + 500
+    lower_range = df['Balance'].mean() - graph_width
+    upper_range = df['Balance'].mean() + graph_width
     ax.hist(df['Balance'], bins=50, range=(lower_range, upper_range), color='skyblue', edgecolor='black')
     
     # Labels
