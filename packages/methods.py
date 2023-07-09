@@ -35,7 +35,7 @@ def dataframe_conversion(samples):
     """
     return pd.DataFrame(samples, columns=['Balance'])
 
-def frequency_plot(df, initial_balance):
+def frequency_plot(df, initial_balance, repeats):
     """
     Creates a matplotlib plot that visualizes the returns based on user input
     Args:
@@ -50,7 +50,7 @@ def frequency_plot(df, initial_balance):
     fig, ax = plt.subplots(figsize=(4,3))
     ax.hist(df['Balance'], bins=50, range=(-500,500), color='skyblue', edgecolor='black')
     
-    ax.set_title("Frequency Histogram of different Returns")
+    ax.set_title("Frequency Histogram of different Returns, n = " + str(repeats))
     ax.set_xlabel("Ending Balance")
     ax.set_ylabel("Frequency")
     ax.axvline(x=initial_balance, color='red', linestyle='--')

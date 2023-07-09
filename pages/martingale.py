@@ -71,7 +71,7 @@ with st.form(key='martingale_parameters'):
 if submit_button:
     samples = sample(martingale, repeats, initial_balance, num_plays, initial_bet, preference)
     martingale_df = dataframe_conversion(samples)
-    frequency_plot(martingale_df, initial_balance)
+    frequency_plot(martingale_df, initial_balance, repeats)
 
 
 
