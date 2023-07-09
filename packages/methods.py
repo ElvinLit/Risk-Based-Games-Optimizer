@@ -46,9 +46,18 @@ def frequency_plot(df, initial_balance):
     """
     
     # Plotting configurations
-    fig, ax = plt.subplots(figsize=(5,1))
-    ax.hist(x=df.get('Balance'))
-    plt.xlabel('Ending Balance')
-    plt.ylabel('Frequency')
+    
+    fig, ax = plt.subplots(figsize=(4,3))
+    ax.hist(df['Balance'], bins=50, range=(-500,500), color='skyblue', edgecolor='black')
+    
+    ax.set_title("Frequency Histogram of different Returns")
+    ax.set_xlabel("Ending Balance")
+    ax.set_ylabel("Frequency")
+    ax.axvline(x=initial_balance, color='red', linestyle='--')
+    ax.annotate("STARTING BALANCE", xy=(initial_balance, 0), xytext=(initial_balance, 25),
+             arrowprops=dict(arrowstyle='->', color = "Red"), color = "Red")
+    fig.set_size_inches(10,4)
 
-    st.pyplot(fig)
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        st.pyplot(fig, use_container_width=True)
