@@ -48,18 +48,26 @@ def frequency_plot(df, initial_balance, repeats):
     # Plotting configurations
     
     fig, ax = plt.subplots(figsize=(4,3))
-    ax.hist(df['Balance'], bins=50, range=(-500,500), color='skyblue', edgecolor='black')
+
+    # Setting range for our graph
+    lower_range = df['Balance'].mean() - 500
+    upper_range = df['Balance'].mean() + 500
+    ax.hist(df['Balance'], bins=50, range=(lower_range, upper_range), color='skyblue', edgecolor='black')
     
+    # Labels
     ax.set_title("Frequency Histogram of different Returns, n = " + str(repeats))
     ax.set_xlabel("Ending Balance")
     ax.set_ylabel("Frequency")
     ax.axvline(x=initial_balance, color='red', linestyle='--')
 
-    hist, bin_edges = np.histogram(df['Balance'], bins=50, range=(-500, 500))
-    filtered_hist = hist[(bin_edges[:-1] >= -500) & (bin_edges[1:] <= 500)]
+    # Calculating annotation location
+    hist, bin_edges = np.histogram(df['Balance'], bins=50, range=(lower_range, upper_range))
+    filtered_hist = hist[(bin_edges[:-1] >= lower_range) & (bin_edges[1:] <= upper_range)]
 
     ax.annotate("STARTING BALANCE", xy=(initial_balance, 0), xytext=(initial_balance, np.mean(filtered_hist)),
              arrowprops=dict(arrowstyle='->', color = "Red"), color = "Red")
+    
+    # Setting size 
     fig.set_size_inches(10,4)
 
     col1, col2 = st.columns([1, 1])
