@@ -65,13 +65,14 @@ with st.form(key='martingale_parameters'):
     initial_bet = st.number_input("Initial Bet")
     preference = (st.text_input("Color (choose from 'Red', 'Black', or 'Green')")).lower()
     repeats =  int(st.number_input("Sample repetitions"))
-    
+    graph_width =  int(st.number_input("Graph Width"))
+
     submit_button = st.form_submit_button(label='Visualize')
 
 if submit_button:
     samples = sample(martingale, repeats, initial_balance, num_plays, initial_bet, preference)
     martingale_df = dataframe_conversion(samples)
-    frequency_plot(martingale_df, initial_balance, repeats)
+    frequency_plot(martingale_df, initial_balance, repeats, graph_width)
 
 
 
