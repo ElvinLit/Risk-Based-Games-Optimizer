@@ -72,4 +72,4 @@ with st.form(key='martingale_parameters'):
 if submit_button:
     samples = sample(dalembert, repeats, initial_balance, num_plays, base_bet, preference)
     dalembert_df = dataframe_conversion(samples)
-    frequency_plot(dalembert_df, initial_balance)
+    frequency_plot(dalembert_df, initial_balance, repeats)
