@@ -33,10 +33,10 @@ def martingale(initial_balance, num_plays, initial_bet, preference):
     
     balance = initial_balance
     bet = initial_bet
-    pref = preference.lower()
+
     for _ in range(num_plays):
         outcome = random.choices(choices, weights)[0]
-        if outcome == pref:
+        if outcome == preference:
             balance += bet
             bet = initial_bet
         else:
@@ -61,7 +61,7 @@ with st.form(key='martingale_parameters'):
     initial_balance = st.number_input("Initial Balance")
     num_plays = int(st.number_input("Number of Plays"))
     initial_bet = st.number_input("Initial Bet")
-    preference = st.text_input("Color (choose from 'Red', 'Black', or 'Green')")
+    preference = (st.text_input("Color (choose from 'Red', 'Black', or 'Green')")).lower()
     repeats =  int(st.number_input("Sample repetitions"))
     
     submit_button = st.form_submit_button(label='Visualize')
