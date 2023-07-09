@@ -32,7 +32,7 @@ def dalembert(initial_balance, num_plays, base_bet, preference):
     bet = base_bet
     
     for i in range(num_plays):
-        if balance <= 0:
+        if balance <= bet:
             break
         outcome = random.choices(choices, weights)[0]
         if outcome == preference:
@@ -66,10 +66,11 @@ with st.form(key='martingale_parameters'):
     base_bet = st.number_input("Base Bet")
     preference = (st.text_input("Color (choose from 'Red', 'Black', or 'Green')")).lower()
     repeats =  int(st.number_input("Sample repetitions"))
+    graph_width =  int(st.number_input("Graph Width"))
     
     submit_button = st.form_submit_button(label='Visualize')
 
 if submit_button:
     samples = sample(dalembert, repeats, initial_balance, num_plays, base_bet, preference)
     dalembert_df = dataframe_conversion(samples)
-    frequency_plot(dalembert_df, initial_balance, repeats)
+    frequency_plot(dalembert_df, initial_balance, repeats, graph_width)
