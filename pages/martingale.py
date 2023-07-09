@@ -35,6 +35,8 @@ def martingale(initial_balance, num_plays, initial_bet, preference):
     bet = initial_bet
 
     for _ in range(num_plays):
+        if balance <= 0:
+            break
         outcome = random.choices(choices, weights)[0]
         if outcome == preference:
             balance += bet
