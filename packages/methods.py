@@ -54,7 +54,11 @@ def frequency_plot(df, initial_balance):
     ax.set_xlabel("Ending Balance")
     ax.set_ylabel("Frequency")
     ax.axvline(x=initial_balance, color='red', linestyle='--')
-    ax.annotate("STARTING BALANCE", xy=(initial_balance, 0), xytext=(initial_balance, 25),
+
+    hist, bin_edges = np.histogram(df['Balance'], bins=50, range=(-500, 500))
+    filtered_hist = hist[(bin_edges[:-1] >= -500) & (bin_edges[1:] <= 500)]
+
+    ax.annotate("STARTING BALANCE", xy=(initial_balance, 0), xytext=(initial_balance, np.mean(filtered_hist)),
              arrowprops=dict(arrowstyle='->', color = "Red"), color = "Red")
     fig.set_size_inches(10,4)
 
