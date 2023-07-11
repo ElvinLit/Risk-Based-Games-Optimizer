@@ -57,13 +57,9 @@ def frequency_plot(df, initial_balance, repeats, graph_width):
     # Setting colors and widths
     ax.hist(df['Balance'], bins=50, range=(lower_range, upper_range), color='cyan', edgecolor='cyan')
     ax.set_facecolor('#0E1117')
-    ax.spines['top'].set_visible(False)
     ax.spines['top'].set_position(('outward', 0))
-    ax.spines['bottom'].set_visible(False)
     ax.spines['bottom'].set_position(('outward', 0))
-    ax.spines['left'].set_visible(False)
     ax.spines['left'].set_position(('outward', 0))
-    ax.spines['right'].set_visible(False)
     ax.spines['right'].set_position(('outward', 0))
     
     # Labels
