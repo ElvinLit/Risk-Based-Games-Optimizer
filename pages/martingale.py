@@ -71,7 +71,7 @@ with st.form(key='martingale_parameters'):
     submit_button = st.form_submit_button(label='Visualize')
 
 if submit_button:
-    samples = sample(martingale, repeats, initial_balance, num_plays, initial_bet, preference)
+    samples = sample(martingale, repeats, initial_balance, num_plays, initial_bet, preference, target_balance if target_balance > 0 else None)
     martingale_df = dataframe_conversion(samples)
     frequency_plot(martingale_df, initial_balance, repeats, graph_width)
     line_plot(martingale, num_plays, initial_balance, initial_bet, preference)
