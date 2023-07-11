@@ -60,6 +60,7 @@ with st.form(key='reverse_martingale_parameters'):
     preference = (st.text_input("Color (choose from 'Red', 'Black', or 'Green')")).lower()
     repeats =  int(st.number_input("Sample repetitions"))
     target_balance = st.number_input("Target Balance", min_value=0.0, value=None, step=0.1, help="Optional: Betting stops once the balance has reached or exceeds this value. Leave blank for no target.") # new target_balance field
+    # TESTING
 
     submit_button = st.form_submit_button(label='Visualize')
 
