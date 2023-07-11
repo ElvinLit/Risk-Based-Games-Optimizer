@@ -64,11 +64,50 @@ def frequency_plot(df, initial_balance, repeats, graph_width):
     hist, bin_edges = np.histogram(df['Balance'], bins=50, range=(lower_range, upper_range))
     filtered_hist = hist[(bin_edges[:-1] >= lower_range) & (bin_edges[1:] <= upper_range)]
 
-    ax.annotate("STARTING BALANCE", xy=(initial_balance, 0), xytext=(initial_balance, np.mean(filtered_hist)),
+    ax.annotate(f'STARTING BALANCE: {initial_balance}', xy=(initial_balance, 0), xytext=(initial_balance, np.mean(filtered_hist)),
              arrowprops=dict(arrowstyle='->', color = "Red"), color = "Red")
     
     # Setting size 
     fig.set_size_inches(10,4)
+
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        st.pyplot(fig, use_container_width=True)
+
+
+
+
+def line_plot(strategy, num_plays, initial_balance, initial_bet, preference):
+    """
+    Creates a matplotlib line plot that visualizes the returns vs number of plays
+    Args:
+        df (DataFrame): dataframe that we are plotting
+        x_axis (string): first parameter that will be analyzed on the x-axis
+        y_axis (string): second parameter that will be analyzed on the y-axis
+    Returns:
+        None
+    """
+
+    balance = np.array([])
+    
+    for i in range(num_plays):
+        balance = np.append(balance, strategy(initial_balance, i, initial_bet, preference))
+
+
+    # Plotting Configurations
+    fig, ax = plt.subplots(figsize=(4,3))
+    
+    # Setting size 
+    fig.set_size_inches(10,4)
+    
+    ax.plot(range(num_plays), balance)
+
+    # Labels
+    ax.set_title("Line Graph for Number of Plays vs. Ending Balance")
+    ax.set_xlabel("Number of Plays")
+    ax.set_ylabel("Ending Balance")
+    ax.axhline(initial_balance, color='red', linestyle='--')
+    ax.text(1, initial_balance + 100, f'STARTING BALANCE: {initial_balance}', color='red')
 
     col1, col2 = st.columns([1, 1])
     with col1:
