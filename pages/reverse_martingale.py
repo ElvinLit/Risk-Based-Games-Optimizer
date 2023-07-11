@@ -54,16 +54,17 @@ def reverse_martingale(initial_balance, num_plays, initial_bet, preference, targ
 st.subheader("Visualize based on your parameters")
 
 with st.form(key='reverse_martingale_parameters'):
-    initial_balance = st.number_input("Initial Balance")
-    num_plays = int(st.number_input("Number of Plays"))
-    initial_bet = st.number_input("Initial Bet")
+    initial_balance = st.number_input("Initial Balance", min_value = 0, value = 0, step = 1)
+    num_plays = int(st.number_input("Number of Plays", min_value = 0, value = 0, step = 1))
+    initial_bet = st.number_input("Initial Bet", min_value = 0, value = 0, step = 1)
     preference = (st.text_input("Color (choose from 'Red', 'Black', or 'Green')")).lower()
-    repeats =  int(st.number_input("Sample repetitions"))
-    target_balance = st.number_input("Target Balance", min_value=0.0, value=None, step=0.1, help="Optional: Betting stops once the balance has reached or exceeds this value. Leave blank for no target.") # new target_balance field
+    repeats =  int(st.number_input("Sample repetitions", min_value = 0, value = 0, step = 1))
+    target_balance = st.number_input("Target Balance", min_value=0.0, value= 0.0, step=0.01, help="Optional: Betting stops once the balance has reached or exceeds this value. Leave blank for no target.") # new target_balance field
+    graph_width =  int(st.number_input("Graph Width", min_value = 0, value = 500, step = 25))
 
     submit_button = st.form_submit_button(label='Visualize')
 
 if submit_button:
     samples = sample(reverse_martingale, repeats, initial_balance, num_plays, initial_bet, preference, target_balance if target_balance > 0 else None)
     martingale_df = dataframe_conversion(samples)
-    frequency_plot(martingale_df, initial_balance)
+    frequency_plot(martingale_df, initial_balance, repeats, graph_width)
