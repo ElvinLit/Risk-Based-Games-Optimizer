@@ -7,7 +7,7 @@ import streamlit as st
 Contains some universal methods that we can use for simulations, think of this like a module/dependency/library that we made ourselves
 """
 
-def sample(strategy, repeats, initial_balance, num_plays, initial_bet, preference):
+def sample(function, repeats, initial_balance, num_plays, initial_bet, preference, target_balance = None):
     """
     Returns array of numbers collected from simulation
     Args:
