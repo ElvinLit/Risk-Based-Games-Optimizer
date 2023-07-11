@@ -60,12 +60,13 @@ st.text("3. If you lose a bet, double the bet for the next round.")
 st.subheader("Visualize based on your parameters")
 
 with st.form(key='martingale_parameters'):
-    initial_balance = st.number_input("Initial Balance")
-    num_plays = int(st.number_input("Number of Plays"))
-    initial_bet = st.number_input("Initial Bet")
+    initial_balance = st.number_input("Initial Balance", min_value = 0, value = 0, step = 1)
+    num_plays = int(st.number_input("Number of Plays", min_value = 0, value = 0, step = 1))
+    initial_bet = st.number_input("Initial Bet", min_value = 0, value = 0, step = 1)
     preference = (st.text_input("Color (choose from 'Red', 'Black', or 'Green')")).lower()
-    repeats =  int(st.number_input("Sample repetitions"))
-    graph_width =  int(st.number_input("Graph Width"))
+    repeats =  int(st.number_input("Sample repetitions", min_value = 0, value = 0, step = 1))
+    target_balance = st.number_input("Target Balance", min_value=0.0, value= 0.0, step=0.01, help="Optional: Betting stops once the balance has reached or exceeds this value. Leave blank for no target.") # new target_balance field
+    graph_width =  int(st.number_input("Graph Width", min_value = 0, value = 500, step = 25))
 
     submit_button = st.form_submit_button(label='Visualize')
 
