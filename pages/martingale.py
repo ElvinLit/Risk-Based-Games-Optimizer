@@ -1,7 +1,7 @@
 import streamlit as st
 from st_pages import Page, show_pages, add_page_title
 import random
-from packages.methods import sample, dataframe_conversion, frequency_plot
+from packages.methods import sample, dataframe_conversion, frequency_plot, line_plot
 
 # Setting configuration for our page
 st.set_page_config(
@@ -73,6 +73,7 @@ if submit_button:
     samples = sample(martingale, repeats, initial_balance, num_plays, initial_bet, preference)
     martingale_df = dataframe_conversion(samples)
     frequency_plot(martingale_df, initial_balance, repeats, graph_width)
+    line_plot(martingale, num_plays, initial_balance, initial_bet, preference)
 
 
 
