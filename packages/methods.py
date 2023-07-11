@@ -54,19 +54,37 @@ def frequency_plot(df, initial_balance, repeats, graph_width):
     lower_range = df['Balance'].mean() - graph_width
     upper_range = df['Balance'].mean() + graph_width
 
-    # Setting colors and widths
+    # Setting general colors and title
     ax.hist(df['Balance'], bins=50, range=(lower_range, upper_range), color='cyan', edgecolor='cyan')
     ax.set_facecolor('#0E1117')
+
+    # Setting axes position 
     ax.spines['top'].set_position(('outward', 0))
     ax.spines['bottom'].set_position(('outward', 0))
     ax.spines['left'].set_position(('outward', 0))
     ax.spines['right'].set_position(('outward', 0))
+
+    # Setting border colors
+    ax.spines['top'].set_color('white')
+    ax.spines['bottom'].set_color('white')
+    ax.spines['left'].set_color('white')
+    ax.spines['right'].set_color('white')
+
+    # Setting axes text color
+    ax.xaxis.label.set_color('white')
+    ax.yaxis.label.set_color('white')
+    ax.tick_params(axis='y', color='white')
+    ax.tick_params(axis='x', color='white')
     
     # Labels
     ax.set_title("Frequency Histogram of different Returns, n = " + str(repeats), color = 'white')
     ax.set_xlabel("Ending Balance", color = 'white')
     ax.set_ylabel("Frequency", color = 'white')
     ax.axvline(x=initial_balance, color='red', linestyle='--')
+    for label in ax.get_xticklabels():
+        label.set_color('white')
+    for label in ax.get_yticklabels():
+        label.set_color('white')
 
     # Calculating annotation location
     hist, bin_edges = np.histogram(df['Balance'], bins=50, range=(lower_range, upper_range))
