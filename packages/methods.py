@@ -52,7 +52,10 @@ def frequency_plot(df, initial_balance, repeats, graph_width):
     # Setting range for our graph
     lower_range = df['Balance'].mean() - graph_width
     upper_range = df['Balance'].mean() + graph_width
+
+    # Setting colors and widths
     ax.hist(df['Balance'], bins=50, range=(lower_range, upper_range), color='skyblue', edgecolor='black')
+    ax.set_facecolor('cyan')
     
     # Labels
     ax.set_title("Frequency Histogram of different Returns, n = " + str(repeats))
@@ -81,9 +84,13 @@ def line_plot(strategy, num_plays, initial_balance, initial_bet, preference):
     """
     Creates a matplotlib line plot that visualizes the returns vs number of plays
     Args:
+       Args:
         df (DataFrame): dataframe that we are plotting
-        x_axis (string): first parameter that will be analyzed on the x-axis
-        y_axis (string): second parameter that will be analyzed on the y-axis
+        num_plays (int): number of plays
+        initial_balance (int or float): the initial balance based on user input
+        initial_bet (int or float): starting amount
+        preference (string): Color preference from "red", "black", or "green"
+
     Returns:
         None
     """
