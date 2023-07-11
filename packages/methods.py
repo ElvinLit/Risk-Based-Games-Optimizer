@@ -47,8 +47,10 @@ def frequency_plot(df, initial_balance, repeats, graph_width):
     
     # Plotting configurations
     
-    fig, ax = plt.subplots(figsize=(500/50000, 4), dpi=50000)
+    fig, ax = plt.subplots()
     fig.set_facecolor('#0E1117')
+
+    plt.rcParams['font.family'] = 'Serif'
 
     # Setting range for our graph
     lower_range = df['Balance'].mean() - graph_width
@@ -81,10 +83,16 @@ def frequency_plot(df, initial_balance, repeats, graph_width):
     ax.set_xlabel("Ending Balance", color = 'white')
     ax.set_ylabel("Frequency", color = 'white')
     ax.axvline(x=initial_balance, color='red', linestyle='--')
+    ax.set_yticklabels(ax.get_yticks(), color = 'white')
+    ax.set_xticklabels(ax.get_yticks(), color = 'white')
+    '''
     for label in ax.get_xticklabels():
         label.set_color('white')
     for label in ax.get_yticklabels():
         label.set_color('white')
+    '''
+    # Setting fonts
+    
 
     # Calculating annotation location
     hist, bin_edges = np.histogram(df['Balance'], bins=50, range=(lower_range, upper_range))
