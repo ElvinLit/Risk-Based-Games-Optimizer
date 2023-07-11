@@ -138,7 +138,7 @@ def line_plot(strategy, num_plays, initial_balance, initial_bet, preference):
     ax.set_xlabel("Number of Plays")
     ax.set_ylabel("Ending Balance")
     ax.axhline(initial_balance, color='red', linestyle='--')
-    ax.text(1, initial_balance + 100, f'STARTING BALANCE: {initial_balance}', color='red')
+    ax.text(0, balance.max(), f'STARTING BALANCE: {initial_balance}', color='red')
 
     col1, col2 = st.columns([1, 1])
     with col1:
