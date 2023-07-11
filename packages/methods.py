@@ -47,20 +47,29 @@ def frequency_plot(df, initial_balance, repeats, graph_width):
     
     # Plotting configurations
     
-    fig, ax = plt.subplots(figsize=(4,3))
+    fig, ax = plt.subplots(figsize=(500/50000, 4), dpi=50000)
+    fig.set_facecolor('#0E1117')
 
     # Setting range for our graph
     lower_range = df['Balance'].mean() - graph_width
     upper_range = df['Balance'].mean() + graph_width
 
     # Setting colors and widths
-    ax.hist(df['Balance'], bins=50, range=(lower_range, upper_range), color='skyblue', edgecolor='black')
-    ax.set_facecolor('cyan')
+    ax.hist(df['Balance'], bins=50, range=(lower_range, upper_range), color='cyan', edgecolor='cyan')
+    ax.set_facecolor('#0E1117')
+    ax.spines['top'].set_visible(False)
+    ax.spines['top'].set_position(('outward', 0))
+    ax.spines['bottom'].set_visible(False)
+    ax.spines['bottom'].set_position(('outward', 0))
+    ax.spines['left'].set_visible(False)
+    ax.spines['left'].set_position(('outward', 0))
+    ax.spines['right'].set_visible(False)
+    ax.spines['right'].set_position(('outward', 0))
     
     # Labels
-    ax.set_title("Frequency Histogram of different Returns, n = " + str(repeats))
-    ax.set_xlabel("Ending Balance")
-    ax.set_ylabel("Frequency")
+    ax.set_title("Frequency Histogram of different Returns, n = " + str(repeats), color = 'white')
+    ax.set_xlabel("Ending Balance", color = 'white')
+    ax.set_ylabel("Frequency", color = 'white')
     ax.axvline(x=initial_balance, color='red', linestyle='--')
 
     # Calculating annotation location
@@ -72,10 +81,11 @@ def frequency_plot(df, initial_balance, repeats, graph_width):
     
     # Setting size 
     fig.set_size_inches(10,4)
-
-    col1, col2 = st.columns([1, 1])
-    with col1:
-        st.pyplot(fig, use_container_width=True)
+    '''
+        col1, col2 = st.columns([1, 1])
+        with col1:
+    '''
+    st.pyplot(fig, use_container_width=True)
 
 
 
