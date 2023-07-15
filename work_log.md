@@ -7,3 +7,4 @@
 - Fixed tickmarks on graphs to show accurate values
 - Fixed vertical line starting balance indicator on histogram
 - Reorganized graphs into st.columns
+- Created the box and whisker plot
