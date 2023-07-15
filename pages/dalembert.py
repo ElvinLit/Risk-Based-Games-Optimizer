@@ -61,17 +61,28 @@ st.text("3. If you lose a bet, add the base bet for the next round.")
 # Handles form data
 st.subheader("Visualize based on your parameters")
 
-with st.form(key='martingale_parameters'):
-    initial_balance = st.number_input("Initial Balance")
-    num_plays = int(st.number_input("Number of Plays"))
-    base_bet = st.number_input("Base Bet")
-    preference = (st.text_input("Color (choose from 'Red', 'Black', or 'Green')")).lower()
-    repeats =  int(st.number_input("Sample repetitions"))
-    graph_width =  int(st.number_input("Graph Width"))
-    
+with st.form(key='dalembert_parameters'):
+    initial_balance_text = st.text_input("Initial Balance", placeholder= '200')
+    num_plays_text = st.text_input("Number of Plays", placeholder= '10')
+    initial_bet_text = st.text_input("Initial Bet", placeholder= '10')
+    preference = (st.selectbox("Color", options=['Red', 'Black', 'Green'])).lower()
+    repeats_text =  st.text_input("Sample repetitions", placeholder= '100')
+    target_balance_text = st.text_input("Target Balance", placeholder= '0', help="Optional: Betting stops once the balance has reached or exceeds this value. Leave blank for no target.")
     submit_button = st.form_submit_button(label='Visualize')
 
 if submit_button:
-    samples = sample(dalembert, repeats, initial_balance, num_plays, base_bet, preference)
-    dalembert_df = dataframe_conversion(samples)
-    frequency_plot(dalembert_df, initial_balance, repeats, graph_width)
+    try:
+        initial_balance = float(initial_balance_text)
+        num_plays = int(num_plays_text)
+        base_bet = float(initial_bet_text)
+        repeats =  int(repeats_text)
+        target_balance = float(target_balance_text)
+        graph_width =  base_bet * 20
+
+        samples = sample(dalembert, repeats, initial_balance, num_plays, base_bet, preference, target_balance if target_balance > 0 else None)
+        dalembert_df = dataframe_conversion(samples)
+        frequency_plot(dalembert_df, initial_balance, repeats, graph_width)
+        line_plot(dalembert, num_plays, initial_balance, base_bet, preference)
+
+    except ValueError:
+        st.error("Please enter valid numeric inputs in the form fields.")

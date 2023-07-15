@@ -57,17 +57,27 @@ def reverse_martingale(initial_balance, num_plays, initial_bet, preference, targ
 st.subheader("Visualize based on your parameters")
 
 with st.form(key='reverse_martingale_parameters'):
-    initial_balance = st.number_input("Initial Balance", min_value = 0, value = 0, step = 1)
-    num_plays = int(st.number_input("Number of Plays", min_value = 0, value = 0, step = 1))
-    initial_bet = st.number_input("Initial Bet", min_value = 0, value = 0, step = 1)
-    preference = (st.text_input("Color (choose from 'Red', 'Black', or 'Green')")).lower()
-    repeats =  int(st.number_input("Sample repetitions", min_value = 0, value = 0, step = 1))
-    target_balance = st.number_input("Target Balance", min_value=0.0, value= 0.0, step=0.01, help="Optional: Betting stops once the balance has reached or exceeds this value. Leave blank for no target.") # new target_balance field
-    graph_width =  int(st.number_input("Graph Width", min_value = 0, value = 500, step = 25))
-
+    initial_balance_text = st.text_input("Initial Balance", placeholder= '200')
+    num_plays_text = st.text_input("Number of Plays", placeholder= '10')
+    initial_bet_text = st.text_input("Initial Bet", placeholder= '10')
+    preference = (st.selectbox("Color", options=['Red', 'Black', 'Green'])).lower()
+    repeats_text =  st.text_input("Sample repetitions", placeholder= '100')
+    target_balance_text = st.text_input("Target Balance", placeholder= '0', help="Optional: Betting stops once the balance has reached or exceeds this value. Leave blank for no target.")
     submit_button = st.form_submit_button(label='Visualize')
 
 if submit_button:
-    samples = sample(reverse_martingale, repeats, initial_balance, num_plays, initial_bet, preference, target_balance if target_balance > 0 else None)
-    martingale_df = dataframe_conversion(samples)
-    frequency_plot(martingale_df, initial_balance, repeats, graph_width)
+    try:
+        initial_balance = float(initial_balance_text)
+        num_plays = int(num_plays_text)
+        initial_bet = float(initial_bet_text)
+        repeats =  int(repeats_text)
+        target_balance = float(target_balance_text)
+        graph_width =  initial_bet * 20
+
+        samples = sample(reverse_martingale, repeats, initial_balance, num_plays, initial_bet, preference, target_balance if target_balance > 0 else None)
+        reverse_martingale_df = dataframe_conversion(samples)
+        frequency_plot(reverse_martingale_df, initial_balance, repeats, graph_width)
+        line_plot(reverse_martingale, num_plays, initial_balance, initial_bet, preference)
+
+    except ValueError:
+        st.error("Please enter valid numeric inputs in the form fields.")

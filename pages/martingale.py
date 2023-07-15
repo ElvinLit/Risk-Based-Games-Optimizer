@@ -61,21 +61,27 @@ st.text("3. If you lose a bet, double the bet for the next round.")
 st.subheader("Visualize based on your parameters")
 
 with st.form(key='martingale_parameters'):
-    initial_balance = st.number_input("Initial Balance", min_value = 0, value = 200, step = 1)
-    num_plays = int(st.number_input("Number of Plays", min_value = 0, value = 10, step = 1))
-    initial_bet = st.number_input("Initial Bet", min_value = 0, value = 10, step = 1)
-    target_balance = st.number_input("Target Balance", min_value=0.0, value= 0.0, step=0.01, help="Optional: Betting stops once the balance has reached or exceeds this value. Leave blank for no target.") # new target_balance field
+    initial_balance_text = st.text_input("Initial Balance", placeholder= '200')
+    num_plays_text = st.text_input("Number of Plays", placeholder= '10')
+    initial_bet_text = st.text_input("Initial Bet", placeholder= '10')
     preference = (st.selectbox("Color", options=['Red', 'Black', 'Green'])).lower()
-    repeats =  int(st.number_input("Sample repetitions", min_value = 0, value = 100, step = 1))
-    graph_width =  initial_bet * 20
-
+    repeats_text =  st.text_input("Sample repetitions", placeholder= '100')
+    target_balance_text = st.text_input("Target Balance", placeholder= '0', help="Optional: Betting stops once the balance has reached or exceeds this value. Leave blank for no target.")
     submit_button = st.form_submit_button(label='Visualize')
 
 if submit_button:
-    samples = sample(martingale, repeats, initial_balance, num_plays, initial_bet, preference, target_balance if target_balance > 0 else None)
-    martingale_df = dataframe_conversion(samples)
-    frequency_plot(martingale_df, initial_balance, repeats, graph_width)
-    line_plot(martingale, num_plays, initial_balance, initial_bet, preference)
+    try:
+        initial_balance = float(initial_balance_text)
+        num_plays = int(num_plays_text)
+        initial_bet = float(initial_bet_text)
+        repeats =  int(repeats_text)
+        target_balance = float(target_balance_text)
+        graph_width =  initial_bet * 20
 
+        samples = sample(martingale, repeats, initial_balance, num_plays, initial_bet, preference, target_balance if target_balance > 0 else None)
+        martingale_df = dataframe_conversion(samples)
+        frequency_plot(martingale_df, initial_balance, repeats, graph_width)
+        line_plot(martingale, num_plays, initial_balance, initial_bet, preference)
 
-
+    except ValueError:
+        st.error("Please enter valid numeric inputs in the form fields.")
