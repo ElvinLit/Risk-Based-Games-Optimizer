@@ -57,12 +57,14 @@ col1, col2 = st.columns([1,1])
 
 with col1:
     # Description of the strategy
-    # NICK ADD DESCRIPTIONS
-    st.write("The **D'Alembert system** is a betting strategy used for Roulette. It is an algorithm with the goal of playing conservatively. The allure of this strategy surrounds the superficial ease of a balanced recovery after loss.")
-    st.write("The algorithm for this strategy involves the following guidelines: ")
-    st.text("1. Set an base bet")
-    st.text("2. If you win a bet, subtract the bet by the base bet and continue.")
-    st.text("3. If you lose a bet, add the base bet for the next round.")
+    st.write("The **reverse martingale system** is the reverse of the Martingale strategy. \
+            For traders, this strategy is better than its counterpart due to the momentous nature of markets, \
+            but this strategy's origin was for betting applications. It is an algorithm with the goal of maximizing \
+            profits on winning streaks and minimizing the losses on losing streaks.")
+    st.write("The strategy can be algorithmically described simply as follows: ")
+    st.text("1. Set an initial bet")
+    st.text("2. If you win a bet, double the bet for the next round.")
+    st.text("3. If you lose a bet, reset the bet to the initial bet and continue.")
 
 
 # Subheader 
