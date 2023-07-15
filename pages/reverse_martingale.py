@@ -1,7 +1,8 @@
 import streamlit as st
 from st_pages import Page, show_pages, add_page_title
 import random
-from packages.methods import sample, dataframe_conversion, frequency_plot
+from packages.graphs import frequency_plot, line_plot
+from packages.data_manipulation import sample, dataframe_conversion
 
 # Setting configuration for our page
 st.set_page_config(
