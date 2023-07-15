@@ -76,11 +76,11 @@ st.markdown('<h2 class="custom-subheader">Visualizations</h2>', unsafe_allow_htm
 # Handles form data
 
 with col2:
-    initial_balance = st.slider("Initial Balance", min_value=1.00, max_value=1000.00, value=200.00, step=10.00)
+    initial_balance = st.slider("Initial Balance", min_value=1, max_value=1000, value=200, step=1)
     num_plays = st.slider("Number of Plays", min_value=10, max_value=500, value=10, step=1)
     initial_bet = st.slider("Initial Bet", min_value=1, max_value=1000, value=10, step=1)
     repeats = st.slider("Sample repetitions", min_value=10, max_value=1000, value=100, step=10)
-    target_balance = st.slider("Target Balance", min_value=0.00, max_value=5000.00, value=0.00, step=10.00, help="Optional: Betting stops once the balance has reached or exceeds this value. Leave as 0 for no target.")
+    target_balance = st.slider("Target Balance", min_value=0, max_value=5000, value=0, step=10, help="Optional: Betting stops once the balance has reached or exceeds this value. Leave as 0 for no target.")
     preference = (st.selectbox("Color", options=['Red', 'Black', 'Green'])).lower()
     graph_width =  initial_bet * 20
 
