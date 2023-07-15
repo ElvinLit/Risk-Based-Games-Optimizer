@@ -67,11 +67,12 @@ with st.form(key='reverse_martingale_parameters'):
 
 if submit_button:
     try:
-        initial_balance = float(initial_balance_text)
-        num_plays = int(num_plays_text)
-        initial_bet = float(initial_bet_text)
-        repeats =  int(repeats_text)
-        if target_balance_text.upper() == "" or "NONE":
+        initial_balance = float(initial_balance_text if initial_balance_text else '200')
+        num_plays = int(num_plays_text if num_plays_text else '10')
+        initial_bet = float(initial_bet_text if initial_bet_text else '10')
+        repeats =  int(repeats_text if repeats_text else '100')
+        
+        if target_balance_text.upper() == "" or target_balance_text.upper() == "NONE":
             target_balance = 0.0
         else: 
             target_balance = float(target_balance_text)
