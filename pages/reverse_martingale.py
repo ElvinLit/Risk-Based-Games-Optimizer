@@ -84,7 +84,7 @@ with col2:
     initial_bet = st.slider("Initial Bet", min_value=0, max_value=1000, value=10, step=1)
     preference = (st.selectbox("Color", options=['Red', 'Black', 'Green'])).lower()
     repeats = st.slider("Sample repetitions", min_value=0, max_value=1000, value=100, step=10)
-    target_balance = st.slider("Target Balance", min_value=0.0, max_value=1000.0, value=0.0, step=0.1, help="Optional: Betting stops once the balance has reached or exceeds this value. Leave as 0 for no target.")
+    target_balance = st.slider("Target Balance", min_value=0.0, max_value=5000.0, value=0.0, step=0.1, help="Optional: Betting stops once the balance has reached or exceeds this value. Leave as 0 for no target.")
 
     graph_width =  initial_bet * 20
 
