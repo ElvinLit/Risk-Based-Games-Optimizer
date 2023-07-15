@@ -74,36 +74,20 @@ st.markdown(
     </style>
     """,
     unsafe_allow_html=True,)
-st.markdown('<h2 class="custom-subheader">Visualize Based on your Parameters</h2>', unsafe_allow_html=True)
+st.markdown('<h2 class="custom-subheader">Visualization</h2>', unsafe_allow_html=True)
+
+
+# Handles form data
 
 with col2:
-    with st.form(key='dalembert_parameters'):
-        # Argument entries
-        initial_balance_text = st.text_input("Initial Balance", placeholder= '200')
-        num_plays_text = st.text_input("Number of Plays", placeholder= '10')
-        initial_bet_text = st.text_input("Initial Bet", placeholder= '10')
-        preference = (st.selectbox("Color", options=['Red', 'Black', 'Green'])).lower()
-        repeats_text =  st.text_input("Sample repetitions", placeholder= '100')
-        target_balance_text = st.text_input("Target Balance", placeholder = "None", help="Optional: Betting stops once the balance has reached or exceeds this value. Leave None for no target.")
+    initial_balance = st.slider("Initial Balance", min_value=0, max_value=1000, value=200, step=10)
+    num_plays = st.slider("Number of Plays", min_value=0, max_value=500, value=10, step=1)
+    initial_bet = st.slider("Initial Bet", min_value=0, max_value=1000, value=10, step=1)
+    repeats = st.slider("Sample repetitions", min_value=0, max_value=1000, value=100, step=10)
+    target_balance = st.slider("Target Balance", min_value=0, max_value=1000, value=0, step=1, help="Optional: Betting stops once the balance has reached or exceeds this value. Leave as 0 for no target.")
+    preference = (st.selectbox("Color", options=['Red', 'Black', 'Green'])).lower()
+    graph_width =  initial_bet * 20
 
-        # Submit button
-        submit_button = st.form_submit_button(label='Visualize')
-
-if submit_button:
-    try:
-        initial_balance = float(initial_balance_text)
-        num_plays = int(num_plays_text)
-        base_bet = float(initial_bet_text)
-        repeats =  int(repeats_text)
-        if target_balance_text.upper() == "" or "NONE":
-            target_balance = 0.0
-        else: 
-            target_balance = float(target_balance_text)
-        graph_width =  base_bet * 20 
-
-    except ValueError:
-        st.error("Please enter valid numeric inputs in the form fields.")
-
-    samples = sample(dalembert, repeats, initial_balance, num_plays, base_bet, preference, target_balance if target_balance > 0 else None)
-    dalembert_df = dataframe_conversion(samples)
-    roulette_plot(line_plot(dalembert, num_plays, initial_balance, base_bet, preference), frequency_plot(dalembert_df, initial_balance, repeats, graph_width), box_plot(dalembert_df, initial_balance, repeats, graph_width))
+samples = sample(dalembert, repeats, initial_balance, num_plays, initial_bet, preference, target_balance if target_balance > 0 else None)
+martingale_df = dataframe_conversion(samples)
+roulette_plot(line_plot(dalembert, num_plays, initial_balance, initial_bet, preference), frequency_plot(martingale_df, initial_balance, repeats, graph_width), box_plot(martingale_df, initial_balance, repeats, graph_width))
