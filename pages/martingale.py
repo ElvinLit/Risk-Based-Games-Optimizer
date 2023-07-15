@@ -49,44 +49,41 @@ def martingale(initial_balance, num_plays, initial_bet, preference):
 
 
 # ----- FRONTEND ----- #
+# Setting columns
+col1, col2 = st.columns([1,1])
 
-# Description of the strategy
-st.write("The **martingale system** is a betting strategy typically used for Roulette. It is an algorithm with the goal of making back net losses as quickly as possible, albeit containing much higher risk as well.")
-st.write("The strategy can be algorithmically described simply as follows: ")
-st.text("1. Set an initial bet")
-st.text("2. If you win a bet, reset the bet to the initial bet and continue.")
-st.text("3. If you lose a bet, double the bet for the next round.")
+with col1:
+    # Description of the strategy
+    st.write("The **martingale system** is a betting strategy typically used for Roulette. It is an algorithm with the goal of making back net losses as quickly as possible, albeit containing much higher risk as well.")
+    st.write("The strategy can be algorithmically described simply as follows: ")
+    st.text("1. Set an initial bet")
+    st.text("2. If you win a bet, reset the bet to the initial bet and continue.")
+    st.text("3. If you lose a bet, double the bet for the next round.")
+
+# Subheader 
+st.markdown(
+    """
+    <style>
+    .custom-subheader {
+        text-align: center; /* Change the text alignment to left */
+        font-family: Helvetica
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,)
+st.markdown('<h2 class="custom-subheader">Visualizations</h2>', unsafe_allow_html=True)
 
 # Handles form data
-st.subheader("Visualize based on your parameters")
 
-with st.form(key='martingale_parameters'):
-    initial_balance_text = st.text_input("Initial Balance", placeholder= '200')
-    num_plays_text = st.text_input("Number of Plays", placeholder= '10')
-    initial_bet_text = st.text_input("Initial Bet", placeholder= '10')
+with col2:
+    initial_balance = st.slider("Initial Balance", min_value=0, max_value=1000, value=200, step=10)
+    num_plays = st.slider("Number of Plays", min_value=0, max_value=500, value=10, step=1)
+    initial_bet = st.slider("Initial Bet", min_value=0, max_value=1000, value=10, step=1)
     preference = (st.selectbox("Color", options=['Red', 'Black', 'Green'])).lower()
-    repeats_text =  st.text_input("Sample repetitions", placeholder= '100')
-    target_balance_text = st.text_input("Target Balance", placeholder= 'None', help="Optional: Betting stops once the balance has reached or exceeds this value. Leave blank for no target.")
-    submit_button = st.form_submit_button(label='Visualize')
+    repeats = st.slider("Sample repetitions", min_value=0, max_value=1000, value=100, step=10)
+    target_balance = st.slider("Target Balance", min_value=0, max_value=1000, value=0, step=1, help="Optional: Betting stops once the balance has reached or exceeds this value. Leave as 0 for no target.")
+    graph_width =  initial_bet * 20
 
-if submit_button:
-    
-    # Verify the inputs are valid
-    try:
-        initial_balance = float(initial_balance_text)
-        num_plays = int(num_plays_text)
-        initial_bet = float(initial_bet_text)
-        repeats =  int(repeats_text)
-        if target_balance_text.upper() == "" or "NONE":
-            target_balance = 0.0
-        else: 
-            target_balance = float(target_balance_text)
-        graph_width =  initial_bet * 20
-
-    except ValueError:
-        st.error("Please enter valid numeric inputs in the form fields.")
-
-    # Sample and plot
-    samples = sample(martingale, repeats, initial_balance, num_plays, initial_bet, preference, target_balance if target_balance > 0 else None)
-    martingale_df = dataframe_conversion(samples)
-    roulette_plot(line_plot(martingale, num_plays, initial_balance, initial_bet, preference), frequency_plot(martingale_df, initial_balance, repeats, graph_width), box_plot(martingale_df, initial_balance, repeats, graph_width))
+samples = sample(martingale, repeats, initial_balance, num_plays, initial_bet, preference, target_balance if target_balance > 0 else None)
+martingale_df = dataframe_conversion(samples)
+roulette_plot(line_plot(martingale, num_plays, initial_balance, initial_bet, preference), frequency_plot(martingale_df, initial_balance, repeats, graph_width), box_plot(martingale_df, initial_balance, repeats, graph_width))
