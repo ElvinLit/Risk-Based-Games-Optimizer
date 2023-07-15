@@ -219,7 +219,23 @@ def box_plot(df, initial_balance, repeats, graph_width):
 
     ax.annotate(f'STARTING BALANCE: {initial_balance}', xy=(initial_balance, 0), xytext=(initial_balance, np.mean(filtered_hist)),
              arrowprops=dict(arrowstyle='->', color = "Red"), color = "Red")
+    '''
+    # Calculating Median and Fences
+    max = initial_sample[-1]
+    if max % 2 == 0:
+        m1 = max / 2
+        m2 = m1 + 1
+    else:
+        median = (max + 1) / 2
+        
+    q1, q3 = np.percentile(initial_sample, [25, 75], axis=1)
+    iqr = q3 - q1
+    fences = [q1 - 1.5 * iqr, q3 + 1.5 * iqr]
 
+    # Annotate the median and fences
+    ax.annotate(f'Median: {median:.2f}', xy=(median, i + 1), xytext=(median, i + 1.2), arrowprops=dict(arrowstyle='->', color='blue'))
+    ax.annotate(f'Fences: ({fences[i][0]:.2f}, {fences[i][1]:.2f})', xy=(fences[i][0], i + 1), xytext=(fences[i][0], i + 1.4), arrowprops=dict(arrowstyle='->', color='green'))
+    '''
     # Setting size 
     fig.set_size_inches(10,4)
 

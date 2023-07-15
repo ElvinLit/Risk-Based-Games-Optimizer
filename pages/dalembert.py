@@ -87,5 +87,5 @@ with col2:
     graph_width =  initial_bet * 20
 
 samples = sample(dalembert, repeats, initial_balance, num_plays, initial_bet, preference, target_balance if target_balance > 0 else None)
-martingale_df = dataframe_conversion(samples)
-roulette_plot(line_plot(dalembert, num_plays, initial_balance, initial_bet, preference), frequency_plot(martingale_df, initial_balance, repeats, graph_width), box_plot(martingale_df, initial_balance, repeats, graph_width))
+df = dataframe_conversion(samples)
+roulette_plot(line_plot(dalembert, num_plays, initial_balance, initial_bet, preference), frequency_plot(df, initial_balance, repeats, graph_width), box_plot(df, initial_balance, repeats, graph_width))
