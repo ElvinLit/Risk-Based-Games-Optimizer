@@ -61,7 +61,6 @@ with col1:
     st.text("2. If you win a bet, subtract the bet by the base bet and continue.")
     st.text("3. If you lose a bet, add the base bet for the next round.")
 
-    # Handles form data
 
 # Subheader 
 st.markdown(
@@ -78,13 +77,12 @@ st.markdown('<h2 class="custom-subheader">Visualization</h2>', unsafe_allow_html
 
 
 # Handles form data
-
 with col2:
     initial_balance = st.slider("Initial Balance", min_value=0, max_value=1000, value=200, step=10)
     num_plays = st.slider("Number of Plays", min_value=0, max_value=500, value=10, step=1)
     initial_bet = st.slider("Initial Bet", min_value=0, max_value=1000, value=10, step=1)
     repeats = st.slider("Sample repetitions", min_value=0, max_value=1000, value=100, step=10)
-    target_balance = st.slider("Target Balance", min_value=0, max_value=1000, value=0, step=1, help="Optional: Betting stops once the balance has reached or exceeds this value. Leave as 0 for no target.")
+    target_balance = st.slider("Target Balance", min_value=0, max_value=5000, value=0, step=1, help="Optional: Betting stops once the balance has reached or exceeds this value. Leave as 0 for no target.")
     preference = (st.selectbox("Color", options=['Red', 'Black', 'Green'])).lower()
     graph_width =  initial_bet * 20
 

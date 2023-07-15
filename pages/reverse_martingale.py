@@ -52,18 +52,41 @@ def reverse_martingale(initial_balance, num_plays, initial_bet, preference, targ
 
 
 # ----- FRONTEND ----- #
+# Setting columns
+col1, col2 = st.columns([1,1])
 
-# Handles form data
-st.subheader("Visualize based on your parameters")
+with col1:
+    # Description of the strategy
+    # NICK ADD DESCRIPTIONS
+    st.write("The **D'Alembert system** is a betting strategy used for Roulette. It is an algorithm with the goal of playing conservatively. The allure of this strategy surrounds the superficial ease of a balanced recovery after loss.")
+    st.write("The algorithm for this strategy involves the following guidelines: ")
+    st.text("1. Set an base bet")
+    st.text("2. If you win a bet, subtract the bet by the base bet and continue.")
+    st.text("3. If you lose a bet, add the base bet for the next round.")
 
-initial_balance = st.slider("Initial Balance", min_value=0, max_value=1000, value=200, step=10)
-num_plays = st.slider("Number of Plays", min_value=0, max_value=500, value=10, step=1)
-initial_bet = st.slider("Initial Bet", min_value=0, max_value=1000, value=10, step=1)
-preference = (st.selectbox("Color", options=['Red', 'Black', 'Green'])).lower()
-repeats = st.slider("Sample repetitions", min_value=0, max_value=1000, value=100, step=10)
-target_balance = st.slider("Target Balance", min_value=0.0, max_value=1000.0, value=0.0, step=0.1, help="Optional: Betting stops once the balance has reached or exceeds this value. Leave as 0 for no target.")
 
-graph_width =  initial_bet * 20
+# Subheader 
+st.markdown(
+    """
+    <style>
+    .custom-subheader {
+        text-align: center; /* Change the text alignment to left */
+        font-family: Arial
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,)
+st.markdown('<h2 class="custom-subheader">Visualization</h2>', unsafe_allow_html=True)
+
+with col2:
+    initial_balance = st.slider("Initial Balance", min_value=0, max_value=1000, value=200, step=10)
+    num_plays = st.slider("Number of Plays", min_value=0, max_value=500, value=10, step=1)
+    initial_bet = st.slider("Initial Bet", min_value=0, max_value=1000, value=10, step=1)
+    preference = (st.selectbox("Color", options=['Red', 'Black', 'Green'])).lower()
+    repeats = st.slider("Sample repetitions", min_value=0, max_value=1000, value=100, step=10)
+    target_balance = st.slider("Target Balance", min_value=0.0, max_value=1000.0, value=0.0, step=0.1, help="Optional: Betting stops once the balance has reached or exceeds this value. Leave as 0 for no target.")
+
+    graph_width =  initial_bet * 20
 
 samples = sample(reverse_martingale, repeats, initial_balance, num_plays, initial_bet, preference, target_balance if target_balance > 0 else None)
 reverse_martingale_df = dataframe_conversion(samples)
