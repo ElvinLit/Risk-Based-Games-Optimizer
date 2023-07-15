@@ -4,6 +4,8 @@ import random
 from packages.graphs import frequency_plot, line_plot
 from packages.data_manipulation import sample, dataframe_conversion
 
+#test
+
 # Setting configuration for our page
 st.set_page_config(
     page_title="Reverse Martingale",
