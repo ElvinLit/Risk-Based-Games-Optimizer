@@ -26,7 +26,7 @@ def frequency_plot(df, initial_balance, repeats, graph_width):
     upper_range = df['Balance'].mean() + graph_width
 
     # Setting general colors and title
-    ax.hist(df['Balance'], bins=50, range=(lower_range, upper_range), color='cyan', edgecolor='cyan')
+    ax.hist(df['Balance'], bins=50, range=(lower_range, upper_range), color='white', edgecolor='black')
     ax.set_facecolor('#0E1117')
 
     # Setting axes position 
@@ -52,14 +52,11 @@ def frequency_plot(df, initial_balance, repeats, graph_width):
     ax.set_xlabel("Ending Balance", color = 'white')
     ax.set_ylabel("Frequency", color = 'white')
     ax.axvline(x=initial_balance, color='red', linestyle='--')
-    ax.set_yticklabels(ax.get_yticks(), color = 'white')
-    ax.set_xticklabels(ax.get_yticks(), color = 'white')
-    '''
     for label in ax.get_xticklabels():
         label.set_color('white')
     for label in ax.get_yticklabels():
-        label.set_color('white')
-    '''
+        label.set_color(color = 'white')
+
     # Setting fonts
     
 
