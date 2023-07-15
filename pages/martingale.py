@@ -1,7 +1,7 @@
 import streamlit as st
 from st_pages import Page, show_pages, add_page_title
 import random
-from packages.graphs import frequency_plot, line_plot
+from packages.graphs import frequency_plot, line_plot, roulette_plot
 from packages.data_manipulation import sample, dataframe_conversion
 
 # Setting configuration for our page
@@ -78,10 +78,9 @@ if submit_button:
         target_balance = float(target_balance_text)
         graph_width =  initial_bet * 20
 
-        samples = sample(martingale, repeats, initial_balance, num_plays, initial_bet, preference, target_balance if target_balance > 0 else None)
-        martingale_df = dataframe_conversion(samples)
-        frequency_plot(martingale_df, initial_balance, repeats, graph_width)
-        line_plot(martingale, num_plays, initial_balance, initial_bet, preference)
-
     except ValueError:
         st.error("Please enter valid numeric inputs in the form fields.")
+
+    samples = sample(martingale, repeats, initial_balance, num_plays, initial_bet, preference, target_balance if target_balance > 0 else None)
+    martingale_df = dataframe_conversion(samples)
+    roulette_plot(line_plot(martingale, num_plays, initial_balance, initial_bet, preference), frequency_plot(martingale_df, initial_balance, repeats, graph_width))
