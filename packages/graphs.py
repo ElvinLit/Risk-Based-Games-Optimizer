@@ -3,34 +3,37 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import streamlit as st
 
-def roulette_plot(line_plot, frequency_plot):
+def roulette_plot(line_plot, frequency_plot, box_plot):
     """
     Plots all the graphs for the roulette strategies
     Args:
-
+        line_plot ('fig' object): Line plot information
+        frequency_plot ('fig' object): Frequency plot information
+        box_plot ('fig' object): Box plot information
     Returns:
         None
     """
-    fig1 = line_plot[0]
-    ax1 = line_plot[1]
-    
-    fig2 = frequency_plot[0]
-    ax2 = frequency_plot[1]
+    fig1 = line_plot
+    fig2 = frequency_plot
+    fig3 = box_plot
 
     col1, col2 = st.columns([1, 1])
     with col1:
         st.pyplot(fig1, use_container_width=True)
     with col2:
         st.pyplot(fig2, use_container_width=True)
+    col3, col4 = st.columns([1, 1])
+    with col3:
+        st.pyplot(fig3, use_container_width=True)
     
 def frequency_plot(df, initial_balance, repeats, graph_width):
     """
-    Creates a matplotlib plot that visualizes the returns based on user input
+    Creates a frequency plot that visualizes the returns based on user input
     Args:
         df (DataFrame): dataframe that we are plotting
         initial_balance (int or float): the initial balance based on user input
     Returns:
-        None
+        'fig' object: contains information about our frequency plot
     """
     
     # Plotting configurations
@@ -88,11 +91,11 @@ def frequency_plot(df, initial_balance, repeats, graph_width):
     # Setting size 
     fig.set_size_inches(10,4)
 
-    return fig, ax
+    return fig
 
 def line_plot(strategy, num_plays, initial_balance, initial_bet, preference):
     """
-    Creates a matplotlib line plot that visualizes the returns vs number of plays
+    Creates a line plot that visualizes the returns vs number of plays
     Args:
        Args:
         df (DataFrame): dataframe that we are plotting
@@ -102,7 +105,7 @@ def line_plot(strategy, num_plays, initial_balance, initial_bet, preference):
         preference (string): Color preference from "red", "black", or "green"
 
     Returns:
-        None
+        'fig' object: contains information about our frequency plot
     """
 
     # Generating our samples
@@ -140,7 +143,7 @@ def line_plot(strategy, num_plays, initial_balance, initial_bet, preference):
     # Labels
     ax.set_title("Line Graph for Number of Plays vs. Ending Balance", color = 'white')
     ax.set_xlabel("Number of Plays", color = 'white')
-    ax.set_ylabel("Ending Balance", color = 'white')
+    ax.set_ylabel("Ending Balances", color = 'white')
     ax.axhline(initial_balance, color='red', linestyle='--')
     for label in ax.get_xticklabels():
         label.set_color('white')
@@ -153,4 +156,71 @@ def line_plot(strategy, num_plays, initial_balance, initial_bet, preference):
     
     ax.plot(range(num_plays), balance, color = 'white')
 
-    return fig, ax
+    return fig
+
+def box_plot(df, initial_balance, repeats, graph_width):
+    """
+    Creates a box plot that visualizes the returns based on user input
+    Args:
+        df (DataFrame): dataframe that we are plotting
+        initial_balance (int or float): the initial balance based on user input
+    Returns:
+        'fig' object: contains information about our box plot
+    """
+    
+    # Plotting configurations
+    fig, ax = plt.subplots()
+    fig.set_facecolor('none')
+
+    # Setting fonts
+    plt.rcParams['font.family'] = 'Serif'
+
+    # Setting range for our graph
+    lower_range = df['Balance'].mean() - graph_width
+    upper_range = df['Balance'].mean() + graph_width
+
+    # Setting general colors and title
+    ax.boxplot(df['Balance'], boxprops=dict(color='white'), whiskerprops=dict(color='white'), capprops=dict(color='white'), medianprops=dict(color='white'), flierprops=dict(marker='o', markersize=6, markerfacecolor='white'), vert=False)
+    ax.set_xlabel('Data')
+    ax.set_ylabel('Values')
+    ax.set_title('Box Plot')
+    ax.set_facecolor("none")
+
+    # Setting axes position 
+    ax.spines['top'].set_position(('outward', 0))
+    ax.spines['bottom'].set_position(('outward', 0))
+    ax.spines['left'].set_position(('outward', 0))
+    ax.spines['right'].set_position(('outward', 0))
+
+    # Setting border colors
+    ax.spines['top'].set_color('white')
+    ax.spines['bottom'].set_color('white')
+    ax.spines['left'].set_color('white')
+    ax.spines['right'].set_color('white')
+
+    # Setting axes text color
+    ax.xaxis.label.set_color('white')
+    ax.yaxis.label.set_color('white')
+    ax.tick_params(axis='y', color='white')
+    ax.tick_params(axis='x', color='white')
+    
+    # Labels
+    ax.set_title("Box Plot of different Returns, n = " + str(repeats), color = 'white')
+    ax.set_xlabel("Ending Balances", color = 'white')
+    ax.set_ylabel("Simulation", color = 'white')
+    ax.axvline(initial_balance, color='red', linestyle='--')
+    ax.set_yticks([])
+    for label in ax.get_xticklabels():
+        label.set_color('white')
+
+    # Calculating annotation location
+    hist, bin_edges = np.histogram(df['Balance'], bins=50, range=(lower_range, upper_range))
+    filtered_hist = hist[(bin_edges[:-1] >= lower_range) & (bin_edges[1:] <= upper_range)]
+
+    ax.annotate(f'STARTING BALANCE: {initial_balance}', xy=(initial_balance, 0), xytext=(initial_balance, np.mean(filtered_hist)),
+             arrowprops=dict(arrowstyle='->', color = "Red"), color = "Red")
+
+    # Setting size 
+    fig.set_size_inches(10,4)
+
+    return fig
