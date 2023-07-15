@@ -8,3 +8,5 @@
 - Fixed vertical line starting balance indicator on histogram
 - Reorganized graphs into st.columns
 - Created the box and whisker plot
+- Created sliders for the forms to update in real time
+- Reformatted pages of roulette strategies
