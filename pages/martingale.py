@@ -4,7 +4,7 @@ import random
 from packages.graphs import frequency_plot, line_plot, box_plot, roulette_plot
 from packages.data_manipulation import sample, dataframe_conversion
 
-# Setting configuration for our page
+# Setting page configuration
 st.set_page_config(
     page_title="Martingale",
     page_icon=":blue_book:",
@@ -20,18 +20,19 @@ add_page_title()
 def martingale(initial_balance, num_plays, initial_bet, preference):
     """
     Simulates the martingale strategy returning balance on roulette given an initial balance, number of plays, initial bet, and color preference  
-
+    Stops betting if balance reaches or exceeds target_balance.
+    
     Args:
-        starting_balance (int or float): Starting amount
+        initial_balance (int or float): Starting amount
         num_plays (int): Number of plays
         initial_bet (int or float): Starting amount
         preference (string): Color preference from "Red", "Black", or "Green"
+        target_balance (int or float, optional): Target amount
     Returns:
         int or float: end amount
     """
     choices = ['red', 'black', 'green']
     weights = [18/38, 18/38, 2/38]
-    
     balance = initial_balance
     bet = initial_bet
 
@@ -61,7 +62,17 @@ with col1:
     st.text("2. If you win a bet, reset the bet to the initial bet and continue.")
     st.text("3. If you lose a bet, double the bet for the next round.")
 
-# Subheader 
+# Handles form data
+with col2:
+    initial_balance = st.slider("Initial Balance", min_value=1, max_value=1000, value=200, step=1)
+    num_plays = st.slider("Number of Plays", min_value=10, max_value=500, value=10, step=1)
+    initial_bet = st.slider("Initial Bet", min_value=1, max_value=1000, value=10, step=1)
+    repeats = st.slider("Sample repetitions", min_value=10, max_value=1000, value=100, step=10)
+    target_balance = st.slider("Target Balance", min_value=0, max_value=5000, value=0, step=10, help="Optional: Betting stops once the balance has reached or exceeds this value. Leave as 0 for no target.")
+    preference = (st.selectbox("Color", options=['Red', 'Black', 'Green'])).lower()
+    graph_width =  initial_bet * 20
+
+# Subheader above graph
 st.markdown(
     """
     <style>
@@ -73,16 +84,6 @@ st.markdown(
     """,
     unsafe_allow_html=True,)
 st.markdown('<h2 class="custom-subheader">Visualizations</h2>', unsafe_allow_html=True)
-
-# Handles form data
-with col2:
-    initial_balance = st.slider("Initial Balance", min_value=1, max_value=1000, value=200, step=1)
-    num_plays = st.slider("Number of Plays", min_value=10, max_value=500, value=10, step=1)
-    initial_bet = st.slider("Initial Bet", min_value=1, max_value=1000, value=10, step=1)
-    repeats = st.slider("Sample repetitions", min_value=10, max_value=1000, value=100, step=10)
-    target_balance = st.slider("Target Balance", min_value=0, max_value=5000, value=0, step=10, help="Optional: Betting stops once the balance has reached or exceeds this value. Leave as 0 for no target.")
-    preference = (st.selectbox("Color", options=['Red', 'Black', 'Green'])).lower()
-    graph_width =  initial_bet * 20
 
 # Simulate and convert into Pandas DataFrame
 samples = sample(martingale, repeats, initial_balance, num_plays, initial_bet, preference, target_balance if target_balance > 0 else None)
