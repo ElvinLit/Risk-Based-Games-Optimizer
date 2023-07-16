@@ -67,7 +67,7 @@ st.markdown(
     """
     <style>
     .custom-subheader {
-        text-align: center; /* Change the text alignment to left */
+        text-align: center; 
         font-family: Arial
     }
     </style>
@@ -86,6 +86,13 @@ with col2:
     preference = (st.selectbox("Color", options=['Red', 'Black', 'Green'])).lower()
     graph_width =  initial_bet * 20
 
+# Simulate and convert into Pandas DataFrame
 samples = sample(dalembert, repeats, initial_balance, num_plays, initial_bet, preference, target_balance if target_balance > 0 else None)
 df = dataframe_conversion(samples)
-roulette_plot(line_plot(dalembert, num_plays, initial_balance, initial_bet, preference), frequency_plot(df, initial_balance, repeats, graph_width), box_plot(df, initial_balance, repeats, graph_width))
+
+# Initializes fig objects for our plots
+line_plt = line_plot(dalembert, num_plays, initial_balance, initial_bet, preference)
+frequency_plt = frequency_plot(df, initial_balance, repeats, graph_width)
+box_plt = box_plot(df, initial_balance, repeats, graph_width)
+
+roulette_plot(line_plt, frequency_plt, box_plt)

@@ -49,6 +49,7 @@ def martingale(initial_balance, num_plays, initial_bet, preference):
 
 
 # ----- FRONTEND ----- #
+
 # Setting columns
 col1, col2 = st.columns([1,1])
 
@@ -65,7 +66,7 @@ st.markdown(
     """
     <style>
     .custom-subheader {
-        text-align: center; /* Change the text alignment to left */
+        text-align: center; 
         font-family: Helvetica
     }
     </style>
@@ -74,7 +75,6 @@ st.markdown(
 st.markdown('<h2 class="custom-subheader">Visualizations</h2>', unsafe_allow_html=True)
 
 # Handles form data
-
 with col2:
     initial_balance = st.slider("Initial Balance", min_value=1, max_value=1000, value=200, step=1)
     num_plays = st.slider("Number of Plays", min_value=10, max_value=500, value=10, step=1)
@@ -84,6 +84,13 @@ with col2:
     preference = (st.selectbox("Color", options=['Red', 'Black', 'Green'])).lower()
     graph_width =  initial_bet * 20
 
+# Simulate and convert into Pandas DataFrame
 samples = sample(martingale, repeats, initial_balance, num_plays, initial_bet, preference, target_balance if target_balance > 0 else None)
 martingale_df = dataframe_conversion(samples)
-roulette_plot(line_plot(martingale, num_plays, initial_balance, initial_bet, preference), frequency_plot(martingale_df, initial_balance, repeats, graph_width), box_plot(martingale_df, initial_balance, repeats, graph_width))
+
+# Initializes fig objects for our plots
+line_plt = line_plot(martingale, num_plays, initial_balance, initial_bet, preference)
+frequency_plt = frequency_plot(martingale_df, initial_balance, repeats, graph_width)
+box_plt = box_plot(martingale_df, initial_balance, repeats, graph_width)
+
+roulette_plot(line_plt, frequency_plt, box_plt)
