@@ -65,6 +65,9 @@ def frequency_plot(df, initial_balance, repeats, graph_width):
     # Plotting configurations
     fig, ax = plt.subplots()
     styling_configurations(fig, ax)
+    
+    # Setting size 
+    fig.set_size_inches(10,4)
 
     # Setting range for our graph
     lower_range = df['Balance'].mean() - graph_width
@@ -89,9 +92,6 @@ def frequency_plot(df, initial_balance, repeats, graph_width):
 
     ax.annotate(f'STARTING BALANCE: {initial_balance}', xy=(initial_balance, 0), xytext=(initial_balance, np.mean(filtered_hist)),
              arrowprops=dict(arrowstyle='->', color = "Red"), color = "Red")
-    
-    # Setting size 
-    fig.set_size_inches(10,4)
 
     return fig
 
@@ -116,8 +116,11 @@ def line_plot(strategy, num_plays, initial_balance, initial_bet, preference):
         balance = np.append(balance, strategy(initial_balance, i, initial_bet, preference))
 
     # Plotting Configurations
-    fig, ax = plt.subplots(figsize=(4,3))
+    fig, ax = plt.subplots()
     styling_configurations(fig, ax)
+    
+    # Setting size 
+    fig.set_size_inches(10,4)
     
     # Labels
     ax.set_title("Line Graph for Number of Plays vs. Ending Balance", color = 'white')
@@ -132,10 +135,6 @@ def line_plot(strategy, num_plays, initial_balance, initial_bet, preference):
         label.set_color(color = 'white')
     ax.text(0, balance.max(), f'STARTING BALANCE: {initial_balance}', color='red')
 
-
-    # Setting size 
-    fig.set_size_inches(10,4)
-    
     ax.plot(range(num_plays), balance, color = 'white')
 
     return fig
@@ -153,6 +152,9 @@ def box_plot(df, initial_balance, repeats, graph_width):
     # Plotting configurations
     fig, ax = plt.subplots()
     styling_configurations(fig, ax)
+    
+    # Setting size 
+    fig.set_size_inches(10,4)
 
     # Setting range for our graph
     lower_range = df['Balance'].mean() - graph_width
@@ -179,6 +181,14 @@ def box_plot(df, initial_balance, repeats, graph_width):
 
     ax.annotate(f'STARTING BALANCE: {initial_balance}', xy=(initial_balance, 0), xytext=(initial_balance, np.mean(filtered_hist)),
              arrowprops=dict(arrowstyle='->', color = "Red"), color = "Red")
+    
+    max = df['Balance'].max()
+    median = df['Balance'].median()
+    first_quartile = df['Balance'].quantile(0.25)
+    third_quartile = df['Balance'].quantile(0.75)
+
+    ax.annotate(f'Median: {median:.2f}', xy=(median, 1), xytext=(median, 1.2), arrowprops=dict(arrowstyle='->', color='Red'), color='white')
+    
     '''
     # Calculating Median and Fences
     max = initial_sample[-1]
@@ -196,7 +206,4 @@ def box_plot(df, initial_balance, repeats, graph_width):
     ax.annotate(f'Median: {median:.2f}', xy=(median, i + 1), xytext=(median, i + 1.2), arrowprops=dict(arrowstyle='->', color='blue'))
     ax.annotate(f'Fences: ({fences[i][0]:.2f}, {fences[i][1]:.2f})', xy=(fences[i][0], i + 1), xytext=(fences[i][0], i + 1.4), arrowprops=dict(arrowstyle='->', color='green'))
     '''
-    # Setting size 
-    fig.set_size_inches(10,4)
-
     return fig
