@@ -13,44 +13,24 @@ def roulette_plot(line_plot, frequency_plot, box_plot):
     Returns:
         None
     """
-    fig1 = line_plot
-    fig2 = frequency_plot
-    fig3 = box_plot
-
     col1, col2 = st.columns([1, 1])
     with col1:
-        st.pyplot(fig1, use_container_width=True)
+        st.pyplot(line_plot, use_container_width=True)
     with col2:
-        st.pyplot(fig2, use_container_width=True)
+        st.pyplot(frequency_plot, use_container_width=True)
     col3, col4 = st.columns([1, 1])
     with col3:
-        st.pyplot(fig3, use_container_width=True)
+        st.pyplot(box_plot, use_container_width=True)
     
-def frequency_plot(df, initial_balance, repeats, graph_width):
+def styling_configurations(fig, ax):
     """
-    Creates a frequency plot that visualizes the returns based on user input
-    Args:
-        df (DataFrame): dataframe that we are plotting
-        initial_balance (int or float): the initial balance based on user input
-    Returns:
-        'fig' object: contains information about our frequency plot
+    Contains all the styling information for our plots
     """
     
-    # Plotting configurations
-    
-    fig, ax = plt.subplots()
-    fig.set_facecolor('none')
-
-
     # Setting fonts
     plt.rcParams['font.family'] = 'Serif'
 
-    # Setting range for our graph
-    lower_range = df['Balance'].mean() - graph_width
-    upper_range = df['Balance'].mean() + graph_width
-
-    # Setting general colors and title
-    ax.hist(df['Balance'], bins=50, range=(lower_range, upper_range), color='white', edgecolor='black')
+    fig.set_facecolor('none')
     ax.set_facecolor("none")
 
     # Setting axes position 
@@ -70,7 +50,29 @@ def frequency_plot(df, initial_balance, repeats, graph_width):
     ax.yaxis.label.set_color('white')
     ax.tick_params(axis='y', color='white')
     ax.tick_params(axis='x', color='white')
+
+
+def frequency_plot(df, initial_balance, repeats, graph_width):
+    """
+    Creates a frequency plot that visualizes the returns based on user input
+    Args:
+        df (DataFrame): dataframe that we are plotting
+        initial_balance (int or float): the initial balance based on user input
+    Returns:
+        'fig' object: contains information about our frequency plot
+    """
     
+    # Plotting configurations
+    fig, ax = plt.subplots()
+    styling_configurations(fig, ax)
+
+    # Setting range for our graph
+    lower_range = df['Balance'].mean() - graph_width
+    upper_range = df['Balance'].mean() + graph_width
+
+    # Setting general colors and title
+    ax.hist(df['Balance'], bins=50, range=(lower_range, upper_range), color='white', edgecolor='black')
+
     # Labels
     ax.set_title("Frequency Histogram of different Returns, n = " + str(repeats), color = 'white')
     ax.set_xlabel("Ending Balance", color = 'white')
@@ -113,43 +115,23 @@ def line_plot(strategy, num_plays, initial_balance, initial_bet, preference):
     for i in range(num_plays):
         balance = np.append(balance, strategy(initial_balance, i, initial_bet, preference))
 
-
     # Plotting Configurations
     fig, ax = plt.subplots(figsize=(4,3))
-    fig.set_facecolor('none')
-
-    ax.set_facecolor('none')
-
-    plt.rcParams['font.family'] = 'Serif'
-
-    # Setting axes position 
-    ax.spines['top'].set_position(('outward', 0))
-    ax.spines['bottom'].set_position(('outward', 0))
-    ax.spines['left'].set_position(('outward', 0))
-    ax.spines['right'].set_position(('outward', 0))
+    styling_configurations(fig, ax)
     
-    # Setting border colors
-    ax.spines['top'].set_color('white')
-    ax.spines['bottom'].set_color('white')
-    ax.spines['left'].set_color('white')
-    ax.spines['right'].set_color('white')
-
-    # Setting axes text color
-    ax.xaxis.label.set_color('white')
-    ax.yaxis.label.set_color('white')
-    ax.tick_params(axis='y', color='white')
-    ax.tick_params(axis='x', color='white')
-
     # Labels
     ax.set_title("Line Graph for Number of Plays vs. Ending Balance", color = 'white')
     ax.set_xlabel("Number of Plays", color = 'white')
     ax.set_ylabel("Ending Balances", color = 'white')
     ax.axhline(initial_balance, color='red', linestyle='--')
+    
+    styling_configurations(fig, ax)
     for label in ax.get_xticklabels():
         label.set_color('white')
     for label in ax.get_yticklabels():
         label.set_color(color = 'white')
     ax.text(0, balance.max(), f'STARTING BALANCE: {initial_balance}', color='red')
+
 
     # Setting size 
     fig.set_size_inches(10,4)
@@ -170,10 +152,7 @@ def box_plot(df, initial_balance, repeats, graph_width):
     
     # Plotting configurations
     fig, ax = plt.subplots()
-    fig.set_facecolor('none')
-
-    # Setting fonts
-    plt.rcParams['font.family'] = 'Serif'
+    styling_configurations(fig, ax)
 
     # Setting range for our graph
     lower_range = df['Balance'].mean() - graph_width
@@ -184,25 +163,6 @@ def box_plot(df, initial_balance, repeats, graph_width):
     ax.set_xlabel('Data')
     ax.set_ylabel('Values')
     ax.set_title('Box Plot')
-    ax.set_facecolor("none")
-
-    # Setting axes position 
-    ax.spines['top'].set_position(('outward', 0))
-    ax.spines['bottom'].set_position(('outward', 0))
-    ax.spines['left'].set_position(('outward', 0))
-    ax.spines['right'].set_position(('outward', 0))
-
-    # Setting border colors
-    ax.spines['top'].set_color('white')
-    ax.spines['bottom'].set_color('white')
-    ax.spines['left'].set_color('white')
-    ax.spines['right'].set_color('white')
-
-    # Setting axes text color
-    ax.xaxis.label.set_color('white')
-    ax.yaxis.label.set_color('white')
-    ax.tick_params(axis='y', color='white')
-    ax.tick_params(axis='x', color='white')
     
     # Labels
     ax.set_title("Box Plot of different Returns, n = " + str(repeats), color = 'white')
