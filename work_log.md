@@ -4,6 +4,7 @@
 - Updated graphing methods to have a grid in the background, improves readability
 - Wrapped all the styling configurations for the different plots into one method, reduces lines and improves coherency
 - renamed streamlit_app.py => app.py to improve conciseness, fixed renaming bugs
+- Added collapsing characteristic to pages
 
 ## 7/14 
 - Wrapped line plot and frequency plot into one method 'roulette_plot' to create a uniform method for roulette strategies
