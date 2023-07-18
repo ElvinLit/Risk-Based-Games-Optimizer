@@ -68,10 +68,10 @@ with col1:
 
 # Handles form data
 with col2:
-    initial_balance = st.slider("Initial Balance", min_value=1, max_value=1000, value=200, step=1)
-    num_plays = st.slider("Number of Plays", min_value=10, max_value=500, value=10, step=1)
-    initial_bet = st.slider("Initial Bet", min_value=1, max_value=1000, value=10, step=1)
-    repeats = st.slider("Sample repetitions", min_value=10, max_value=1000, value=100, step=10)
+    initial_balance = st.slider("Initial Balance", min_value=1, max_value=1000, value=200, step=1, help="Set the starting balance that you'll enter with")
+    num_plays = st.slider("Number of Plays", min_value=10, max_value=500, value=10, step=1, help="Set the number of plays for the strategy")
+    initial_bet = st.slider("Initial Bet", min_value=1, max_value=1000, value=10, step=1, help="Set the initial bet that you will build on")
+    repeats = st.slider("Sample repetitions", min_value=10, max_value=1000, value=100, step=10, help="Set the **n** size for the number of samples")
     target_balance = st.slider("Target Balance", min_value=0, max_value=5000, value=0, step=10, help="Optional: Betting stops once the balance has reached or exceeds this value. Leave as 0 for no target.")
     preference = (st.selectbox("Color", options=['Red', 'Black', 'Green'])).lower()
     graph_width =  initial_bet * 20
