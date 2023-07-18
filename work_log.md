@@ -1,4 +1,8 @@
 # Work Log 
+## 7/18
+- Created config.toml to allow default configurations for our app, mainly to force a certain theme on users
+- Updated graphing methods to have a grid in the background, improves readability
+- Wrapped all the styling configurations for the different plots into one method, reduces lines and improves coherency
 
 ## 7/14 
 - Wrapped line plot and frequency plot into one method 'roulette_plot' to create a uniform method for roulette strategies
