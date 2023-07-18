@@ -26,8 +26,13 @@ def styling_configurations(fig, ax):
     """
     Contains all the styling information for our plots
     """
-    
+
+    # Setting grid style
+    plt.style.use('seaborn-whitegrid')
+    plt.rcParams['grid.alpha'] = 0.3
+
     # Setting fonts
+    
     plt.rcParams['font.family'] = 'Serif'
 
     fig.set_facecolor('none')
@@ -117,6 +122,7 @@ def line_plot(strategy, num_plays, initial_balance, initial_bet, preference):
 
     # Plotting Configurations
     fig, ax = plt.subplots()
+    
     styling_configurations(fig, ax)
     
     # Setting size 
