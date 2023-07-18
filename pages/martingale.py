@@ -8,7 +8,8 @@ from packages.data_manipulation import sample, dataframe_conversion
 st.set_page_config(
     page_title="Martingale",
     page_icon=":blue_book:",
-    layout="wide" 
+    layout="wide", 
+    initial_sidebar_state="collapsed"
 )
 
 # Add page to list of pages

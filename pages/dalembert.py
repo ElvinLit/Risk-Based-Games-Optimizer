@@ -8,7 +8,8 @@ from packages.data_manipulation import sample, dataframe_conversion
 st.set_page_config(
     page_title="D'Alembert",
     page_icon=":flower_playing_cards:",
-    layout="wide" 
+    layout="wide",
+    initial_sidebar_state="collapsed" 
 )
 
 # Add page to list of pages
