@@ -98,6 +98,6 @@ df = dataframe_conversion(samples)
 line_plt = line_plot(dalembert, num_plays, initial_balance, initial_bet, preference)
 frequency_plt = frequency_plot(df, initial_balance, repeats, graph_width)
 box_plt = box_plot(df, initial_balance, repeats, graph_width)
-stats_tbl = stats_table(df)
+stats_tbl = stats_table(df, initial_balance)
 
 roulette_plot(line_plt, frequency_plt, box_plt, stats_tbl)

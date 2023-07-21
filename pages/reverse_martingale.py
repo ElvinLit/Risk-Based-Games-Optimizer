@@ -99,6 +99,6 @@ reverse_martingale_df = dataframe_conversion(samples)
 line_plt = line_plot(reverse_martingale, num_plays, initial_balance, initial_bet, preference)
 frequency_plt = frequency_plot(reverse_martingale_df, initial_balance, repeats, graph_width)
 box_plt = box_plot(reverse_martingale_df, initial_balance, repeats, graph_width)
-stats_tbl = stats_table(reverse_martingale_df)
+stats_tbl = stats_table(reverse_martingale_df, initial_balance)
 
 roulette_plot(line_plt, frequency_plt, box_plt, stats_tbl)

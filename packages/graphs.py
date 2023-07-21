@@ -14,18 +14,21 @@ def roulette_plot(line_plot, frequency_plot, box_plot, stats_table):
         None
     """
     # Assigning statistical data
-    mean, median, max, min, stdev, mode = stats_table
+    mean, median, max, min, stdev, mode, percentage_win, percentage_lose = stats_table
 
     # Setting up data text
     formatted_text = f"""
-**Statistics:**
+    **Statistics:**
 
-- Mean: {mean}
-- Median: {median}
-- Max: {max}
-- Min: {min}
-- Standard Deviation: {stdev}
-"""
+    - Mean: {mean}
+    - Median: {median}
+    - Max: {max}
+    - Min: {min}
+    - Mode: {mode}
+    - Standard Deviation: {stdev}
+    - Chance of gaining money: {percentage_win}
+    - Chance of losing money: {percentage_lose}
+    """
 
     col1, col2 = st.columns([1, 1])
     with col1:
@@ -213,7 +216,7 @@ def box_plot(df, initial_balance, repeats, graph_width):
 
     return fig
 
-def stats_table(df):
+def stats_table(df, initial_balance):
     """
     Creates a table that relays all the statistics associated with the parameters input
     Args:
@@ -227,6 +230,8 @@ def stats_table(df):
     max = df['Balance'].max()
     min = df['Balance'].min()
     stdev = round(df['Balance'].std(), 2)
-    mode = df['Balance'].mode()
+    mode = df['Balance'].mode().iloc[0]
+    percentage_win = str(df[df['Balance'] >= initial_balance].shape[0] / df.shape[0] * 100) + "%"
+    percentage_lose = str(df[df['Balance'] < initial_balance].shape[0] / df.shape[0] * 100) + "%"
     
-    return mean, median, max, min, stdev, mode
+    return mean, median, max, min, stdev, mode, percentage_win, percentage_lose
