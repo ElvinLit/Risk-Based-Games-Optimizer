@@ -57,12 +57,40 @@ col1, col2 = st.columns([1,1])
 
 with col1:
     # Description of the strategy
-    st.write("The **martingale system** is a betting strategy typically used for Roulette. It is an algorithm with the goal of making back net losses as quickly as possible, albeit containing much higher risk as well.")
+    st.write("The **martingale system** is a betting strategy typically used \
+             for Roulette. It is an algorithm with the goal of making back net losses as \
+             quickly as possible, albeit containing much higher risk as well. The name 'Martingale' \
+             is believed to have originated from a French gambling term 'Martingale,' which \
+             referred to a style of strapping, or harness, that was used to fasten a horse's girth. \
+             The betting system was given this name because it metaphorically represented the idea of \
+             doubling down on bets after a loss, as if tightening the reins on a horse to keep it under control.")
     st.write("The strategy can be algorithmically described simply as follows: ")
     st.text("1. Set an initial bet")
     st.text("2. If you win a bet, reset the bet to the initial bet and continue.")
     st.text("3. If you lose a bet, double the bet for the next round.")
-
+    st.text("4. Loop back into step 2.")
+    st.write("While the strategy appears flawless, it ends up with a negative expected value (EV) statistically. Let P be \
+             the probability of winning, Q=1-P be the probability of losing, and a bet of $10. Thus follows: ")
+    st.latex(r'''
+        \begin{align*}
+            p &= \frac{18}{37} \approx 0.4865, \phantom{q} & q = 1 - p \approx 0.5135.
+        \end{align*}
+        ''')
+    st.latex(r'''
+        \begin{align*}
+            \text{EV (win)} &= (p \times \text{Profit per win}) - (q \times \text{Loss per loss}) = (0.4865 \times 10) - (0.5135 \times 10) = -0.275.
+        \end{align*}
+        ''')
+    st.latex(r'''
+        \begin{align*}
+            \text{EV (loss)} &= (q \times \text{Loss per loss}) - (p \times \text{Profit per win}) = (0.5135 \times 20) - (0.4865 \times 10) = -2.815.
+        \end{align*}     
+        ''')
+    st.latex(r'''
+    \begin{align*}
+        \text{EV (one round)} &= (p \times \text{EV (win)}) + (q \times \text{EV (loss)}) = (0.4865 \times -0.275) + (0.5135 \times -2.815) \approx -1.580.
+    \end{align*}
+        ''')
 # Handles form data
 with col2:
     initial_balance = st.slider("Initial Balance", min_value=1, max_value=1000, value=200, step=1, help="Set the starting balance that you'll enter with")

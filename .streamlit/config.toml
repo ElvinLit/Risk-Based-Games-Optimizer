@@ -2,4 +2,9 @@
 headless = true
 
 [theme]
-base = "dark"
+primaryColor="#FF0000"
+backgroundColor="#00140A"
+secondaryBackgroundColor="#0B1E16"
+base="dark"
+textColor="#FFFFFF"
+font="monospace"
