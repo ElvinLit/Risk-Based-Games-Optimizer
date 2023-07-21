@@ -7,7 +7,7 @@ import streamlit as st
 Contains methods for data manipulation
 """
 
-def sample(strategy, repeats, initial_balance, num_plays, initial_bet, preference, target_balance = None):
+def sample(strategy, repeats, initial_balance, num_plays, initial_bet, preference, target_balance = None, floor_balance = 0):
     """
     Returns array of numbers collected from simulation
     Args:
