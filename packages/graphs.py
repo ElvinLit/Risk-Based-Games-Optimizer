@@ -231,7 +231,9 @@ def stats_table(df, initial_balance):
     min = df['Balance'].min()
     stdev = round(df['Balance'].std(), 2)
     mode = df['Balance'].mode().iloc[0]
-    percentage_win = str(df[df['Balance'] >= initial_balance].shape[0] / df.shape[0] * 100) + "%"
-    percentage_lose = str(df[df['Balance'] < initial_balance].shape[0] / df.shape[0] * 100) + "%"
+    percentage_win = df[df['Balance'] >= initial_balance].shape[0] / df.shape[0] * 100
+    percentage_win_str = f"{percentage_win:.2f}%"
+    percentage_lose = df[df['Balance'] < initial_balance].shape[0] / df.shape[0] * 100
+    percentage_lose_str = f"{percentage_lose:.2f}%"
     
-    return mean, median, max, min, stdev, mode, percentage_win, percentage_lose
+    return mean, median, max, min, stdev, mode, percentage_win_str, percentage_lose_str
