@@ -141,7 +141,7 @@ def line_plot(strategy, num_plays, initial_balance, initial_bet, preference):
         label.set_color(color = 'white')
     ax.text(0, balance.max(), f'STARTING BALANCE: {initial_balance}', color='red')
 
-    ax.plot(range(num_plays), balance, color = 'white')
+    ax.scatter(range(num_plays), balance, color = 'white')
 
     return fig
 
