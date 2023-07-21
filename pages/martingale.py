@@ -86,7 +86,7 @@ st.markdown(
     <style>
     .custom-subheader {
         text-align: center; 
-        font-family: Helvetica
+        font-family: monospace
     }
     </style>
     """,

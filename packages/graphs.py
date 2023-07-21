@@ -52,7 +52,7 @@ def styling_configurations(fig, ax):
 
     # Setting fonts
     
-    plt.rcParams['font.family'] = 'Serif'
+    plt.rcParams['font.family'] = 'monospace'
 
     fig.set_facecolor('none')
     ax.set_facecolor("none")
