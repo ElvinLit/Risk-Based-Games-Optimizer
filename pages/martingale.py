@@ -69,7 +69,7 @@ with col1:
     st.text("2. If you win a bet, reset the bet to the initial bet and continue.")
     st.text("3. If you lose a bet, double the bet for the next round.")
     st.text("4. Loop back into step 2.")
-    st.write("While the strategy appears flawless, it ends up with a negative expected value (EV) statistically. Let P be \
+    st.write("While the strategy appears flawless, roulette itself ends up with a negative expected value (EV) statistically. Let P be \
              the probability of winning, Q=1-P be the probability of losing, and a bet of $10. Thus follows: ")
     st.latex(r'''
         \begin{align*}
