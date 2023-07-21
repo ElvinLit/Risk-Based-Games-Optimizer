@@ -18,17 +18,23 @@ def roulette_plot(line_plot, frequency_plot, box_plot, stats_table):
 
     # Setting up data text
     formatted_text = f"""
-    **Statistics:**
+<center>
 
-    - Mean: {mean}
-    - Median: {median}
-    - Max: {max}
-    - Min: {min}
-    - Mode: {mode}
-    - Standard Deviation: {stdev}
-    - Chance of gaining money: {percentage_win}
-    - Chance of losing money: {percentage_lose}
-    """
+**Statistics:**
+
+|                    |                         |
+|--------------------|-------------------------|
+| **Mean**           | {mean}                  |
+| **Median**         | {median}                |
+| **Max**            | {max}                   |
+| **Min**            | {min}                   |
+| **Mode**           | {mode}                  |
+| **Standard Deviation** | {stdev}            |
+| **Chance of gaining money** | {percentage_win} |
+| **Chance of losing money**  | {percentage_lose} |
+
+</center>
+"""
 
     col1, col2 = st.columns([1, 1])
     with col1:
@@ -39,7 +45,7 @@ def roulette_plot(line_plot, frequency_plot, box_plot, stats_table):
     with col3:
         st.pyplot(box_plot, use_container_width=True)
     with col4:
-        st.markdown(formatted_text)
+        st.markdown(formatted_text, unsafe_allow_html=True)
     
 def styling_configurations(fig, ax):
     """
