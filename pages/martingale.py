@@ -69,28 +69,7 @@ with col1:
     st.text("2. If you win a bet, reset the bet to the initial bet and continue.")
     st.text("3. If you lose a bet, double the bet for the next round.")
     st.text("4. Loop back into step 2.")
-    st.write("While the strategy appears flawless, roulette itself ends up with a negative expected value (EV) statistically. Let P be \
-             the probability of winning, Q=1-P be the probability of losing, and a bet of $10. Thus follows: ")
-    st.latex(r'''
-        \begin{align*}
-            p &= \frac{18}{37} \approx 0.4865, \phantom{q} & q = 1 - p \approx 0.5135.
-        \end{align*}
-        ''')
-    st.latex(r'''
-        \begin{align*}
-            \text{EV (win)} &= (p \times \text{Profit per win}) - (q \times \text{Loss per loss}) = (0.4865 \times 10) - (0.5135 \times 10) = -0.275.
-        \end{align*}
-        ''')
-    st.latex(r'''
-        \begin{align*}
-            \text{EV (loss)} &= (q \times \text{Loss per loss}) - (p \times \text{Profit per win}) = (0.5135 \times 20) - (0.4865 \times 10) = -2.815.
-        \end{align*}     
-        ''')
-    st.latex(r'''
-    \begin{align*}
-        \text{EV (one round)} &= (p \times \text{EV (win)}) + (q \times \text{EV (loss)}) = (0.4865 \times -0.275) + (0.5135 \times -2.815) \approx -1.580.
-    \end{align*}
-        ''')
+
 # Handles form data
 with col2:
     initial_balance = st.slider("Initial Balance", min_value=1, max_value=1000, value=200, step=1, help="Set the starting balance that you'll enter with")
