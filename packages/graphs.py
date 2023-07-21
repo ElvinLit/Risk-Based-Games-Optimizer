@@ -154,7 +154,7 @@ def line_plot(strategy, num_plays, initial_balance, initial_bet, preference):
     fig.set_size_inches(10,4)
     
     # Labels
-    ax.set_title("Line Graph for Number of Plays vs. Ending Balance", color = 'white')
+    ax.set_title("Scatterplot for Number of Plays vs. Ending Balance", color = 'white')
     ax.set_xlabel("Number of Plays", color = 'white')
     ax.set_ylabel("Ending Balances", color = 'white')
     ax.axhline(initial_balance, color='red', linestyle='--')
