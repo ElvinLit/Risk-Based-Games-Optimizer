@@ -1,4 +1,12 @@
 # Work Log 
+## 7/21
+- Updated theme of webpage to resemble casino colors
+- Changed line graph to scatterplot to accurately reflect discrete data
+- Created table for descriptive statistics
+- Created about page for roulette to display math of expected value
+- Updated descriptionf of each roulette strategy to give a better sense of context to user
+- Standardized fonts for all webpages and graphs
+
 ## 7/18
 - Created config.toml to allow default configurations for our app, mainly to force a certain theme on users
 - Updated graphing methods to have a grid in the background, improves readability
