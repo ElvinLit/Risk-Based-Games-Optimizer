@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import streamlit as st
 
-def roulette_plot(line_plot, frequency_plot, box_plot):
+def roulette_plot(line_plot, frequency_plot, box_plot, stats_table):
     """
     Plots all the graphs for the roulette strategies
     Args:
@@ -13,6 +13,20 @@ def roulette_plot(line_plot, frequency_plot, box_plot):
     Returns:
         None
     """
+    # Assigning statistical data
+    mean, median, max, min, stdev, mode = stats_table
+
+    # Setting up data text
+    formatted_text = f"""
+**Statistics:**
+
+- Mean: {mean}
+- Median: {median}
+- Max: {max}
+- Min: {min}
+- Standard Deviation: {stdev}
+"""
+
     col1, col2 = st.columns([1, 1])
     with col1:
         st.pyplot(line_plot, use_container_width=True)
@@ -21,6 +35,8 @@ def roulette_plot(line_plot, frequency_plot, box_plot):
     col3, col4 = st.columns([1, 1])
     with col3:
         st.pyplot(box_plot, use_container_width=True)
+    with col4:
+        st.markdown(formatted_text)
     
 def styling_configurations(fig, ax):
     """
@@ -196,3 +212,21 @@ def box_plot(df, initial_balance, repeats, graph_width):
     ax.annotate(f'Median: {median:.2f}', xy=(median, 1), xytext=(median, 1.2), arrowprops=dict(arrowstyle='->', color='Red'), color='white')
 
     return fig
+
+def stats_table(df):
+    """
+    Creates a table that relays all the statistics associated with the parameters input
+    Args:
+        df (DataFrame): dataframe that we are plotting
+
+    Returns:
+        'fig' object: table that displays all the stats
+    """
+    mean = round(df['Balance'].mean(), 2)
+    median = df['Balance'].median()
+    max = df['Balance'].max()
+    min = df['Balance'].min()
+    stdev = round(df['Balance'].std(), 2)
+    mode = df['Balance'].mode()
+    
+    return mean, median, max, min, stdev, mode

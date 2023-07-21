@@ -1,7 +1,7 @@
 import streamlit as st
 from st_pages import add_page_title
 import random
-from packages.graphs import frequency_plot, line_plot, box_plot, roulette_plot
+from packages.graphs import frequency_plot, line_plot, box_plot, stats_table, roulette_plot
 from packages.data_manipulation import sample, dataframe_conversion
 
 # Setting page configuration
@@ -101,5 +101,6 @@ martingale_df = dataframe_conversion(samples)
 line_plt = line_plot(martingale, num_plays, initial_balance, initial_bet, preference)
 frequency_plt = frequency_plot(martingale_df, initial_balance, repeats, graph_width)
 box_plt = box_plot(martingale_df, initial_balance, repeats, graph_width)
+stats_tbl = stats_table(martingale_df)
 
-roulette_plot(line_plt, frequency_plt, box_plt)
+roulette_plot(line_plt, frequency_plt, box_plt, stats_tbl)

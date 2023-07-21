@@ -1,7 +1,7 @@
 import streamlit as st
 from st_pages import add_page_title
 import random
-from packages.graphs import frequency_plot, line_plot, box_plot, roulette_plot
+from packages.graphs import frequency_plot, line_plot, box_plot, stats_table, roulette_plot
 from packages.data_manipulation import sample, dataframe_conversion
 
 # Setting page configuration
@@ -61,7 +61,7 @@ col1, col2 = st.columns([1,1])
 
 with col1:
     # Description of the strategy
-    st.write("The **D'Alembert system** is a betting strategy used for Roulette. It is an algorithm with the goal of playing conservatively. The allure of this strategy surrounds the superficial ease of a balanced recovery after loss.")
+    st.write("The *D'Alembert* roulette betting strategy weaves an intriguing dance of calculated progressions and the allure of a balanced recovery. Named after the renowned French mathematician Jean-Baptiste le Rond d'Alembert, this strategy employs a gradual approach to betting, incrementally increasing wagers after each loss and decreasing them after a win. Players navigate the twists and turns of chance, aiming to recoup losses while savoring the thrill of smaller wins. As the bet amounts sway with each spin, this strategy offers both structure and flexibility, enticing competitors to explore the captivating possibilities.")
     st.write("The algorithm for this strategy involves the following guidelines: ")
     st.text("1. Set an base bet")
     st.text("2. If you win a bet, subtract the bet by the base bet and continue.")
@@ -98,5 +98,6 @@ df = dataframe_conversion(samples)
 line_plt = line_plot(dalembert, num_plays, initial_balance, initial_bet, preference)
 frequency_plt = frequency_plot(df, initial_balance, repeats, graph_width)
 box_plt = box_plot(df, initial_balance, repeats, graph_width)
+stats_tbl = stats_table(df)
 
-roulette_plot(line_plt, frequency_plt, box_plt)
+roulette_plot(line_plt, frequency_plt, box_plt, stats_tbl)
