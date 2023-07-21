@@ -18,23 +18,23 @@ def roulette_plot(line_plot, frequency_plot, box_plot, stats_table):
 
     # Setting up data text
     formatted_text = f"""
-<center>
+    <center>
 
-**Statistics:**
+    **Descriptive Statistics**
 
-|                    |                         |
-|--------------------|-------------------------|
-| **Mean**           | {mean}                  |
-| **Median**         | {median}                |
-| **Max**            | {max}                   |
-| **Min**            | {min}                   |
-| **Mode**           | {mode}                  |
-| **Standard Deviation** | {stdev}            |
-| **Chance of gaining money** | {percentage_win} |
-| **Chance of losing money**  | {percentage_lose} |
+    |                    |                         |
+    |--------------------|-------------------------|
+    | **Mean**           | {mean}                  |
+    | **Median**         | {median}                |
+    | **Max**            | {max}                   |
+    | **Min**            | {min}                   |
+    | **Mode**           | {mode}                  |
+    | **Standard Deviation** | {stdev}            |
+    | **Chance of gaining money** | {percentage_win} |
+    | **Chance of losing money**  | {percentage_lose} |
 
-</center>
-"""
+    </center>
+    """
 
     col1, col2 = st.columns([1, 1])
     with col1:
@@ -200,7 +200,7 @@ def box_plot(df, initial_balance, repeats, graph_width):
     # Labels
     ax.set_title("Box Plot of different Returns, n = " + str(repeats), color = 'white')
     ax.set_xlabel("Ending Balances", color = 'white')
-    ax.set_ylabel("Simulation", color = 'white')
+    ax.set_ylabel("", color = 'white')
     ax.axvline(initial_balance, color='red', linestyle='--')
     ax.set_yticks([])
     for label in ax.get_xticklabels():
