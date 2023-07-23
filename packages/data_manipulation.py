@@ -7,7 +7,7 @@ import streamlit as st
 Contains methods for data manipulation
 """
 
-def sample(strategy, repeats, initial_balance, num_plays, initial_bet, preference, target_balance = None, floor_balance = 0):
+def sample(strategy, repeats, initial_balance, num_plays, initial_bet, preference, target_balance, floor_balance):
     """
     Returns array of numbers collected from simulation
     Args:
@@ -22,7 +22,7 @@ def sample(strategy, repeats, initial_balance, num_plays, initial_bet, preferenc
     """
     arr = np.array([])
     for _ in range(repeats):
-        arr = np.append(arr, strategy(initial_balance, num_plays, initial_bet, preference))
+        arr = np.append(arr, strategy(initial_balance, num_plays, initial_bet, preference, target_balance, floor_balance))
     return arr
 
 def dataframe_conversion(samples):

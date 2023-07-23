@@ -125,7 +125,7 @@ def frequency_plot(df, initial_balance, repeats, graph_width):
 
     return fig
 
-def line_plot(strategy, num_plays, initial_balance, initial_bet, preference):
+def line_plot(strategy, num_plays, initial_balance, initial_bet, preference, target_balance):
     """
     Creates a line plot that visualizes the returns vs number of plays
     Args:
@@ -143,7 +143,7 @@ def line_plot(strategy, num_plays, initial_balance, initial_bet, preference):
     # Generating our samples
     balance = np.array([])
     for i in range(num_plays):
-        balance = np.append(balance, strategy(initial_balance, i, initial_bet, preference))
+        balance = np.append(balance, strategy(initial_balance, i, initial_bet, preference, target_balance))
 
     # Plotting Configurations
     fig, ax = plt.subplots()

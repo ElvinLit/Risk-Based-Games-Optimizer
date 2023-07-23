@@ -18,7 +18,7 @@ add_page_title()
 # ----- BACKEND ----- #
 
 # Martingale implementation
-def martingale(initial_balance, num_plays, initial_bet, preference):
+def martingale(initial_balance, num_plays, initial_bet, preference, target_balance, floor_balance = 0):
     """
     Simulates the martingale strategy returning balance on roulette given an initial balance, number of plays, initial bet, and color preference  
     Stops betting if balance reaches or exceeds target_balance.
@@ -36,9 +36,10 @@ def martingale(initial_balance, num_plays, initial_bet, preference):
     weights = [18/38, 18/38, 2/38]
     balance = initial_balance
     bet = initial_bet
+    ceiling = target_balance
 
     for _ in range(num_plays):
-        if balance <= bet:
+        if bet > balance or balance <= floor_balance or (ceiling is not None and balance >= ceiling):
             break
         outcome = random.choices(choices, weights)[0]
         if outcome == preference:
@@ -77,6 +78,12 @@ with col2:
     initial_bet = st.slider("Initial Bet", min_value=1, max_value=1000, value=10, step=1, help="Set the initial bet that you will build on")
     repeats = st.slider("Sample repetitions", min_value=10, max_value=1000, value=100, step=10, help="Set the **n** size for the number of samples")
     target_balance = st.slider("Target Balance", min_value=0, max_value=5000, value=0, step=10, help="Optional: Betting stops once the balance has reached or exceeds this value. Leave as 0 for no target.")
+    if target_balance > 0 and target_balance <= initial_balance:
+        st.error("Target balance must be greater than initial balance.")
+        st.stop()
+    if target_balance == 0:
+        target_balance = None
+    floor_balance = st.slider("Floor Balance", min_value=0, max_value=1000, value=0, step=10, help="Optional: Betting stops once the balance has fallen under this value. Leave as 0 for no floor.")
     preference = (st.selectbox("Color", options=['Red', 'Black', 'Green'])).lower()
     graph_width =  initial_bet * 20
 
@@ -94,11 +101,11 @@ st.markdown(
 st.markdown('<h2 class="custom-subheader">Visualizations</h2>', unsafe_allow_html=True)
 
 # Simulate and convert into Pandas DataFrame
-samples = sample(martingale, repeats, initial_balance, num_plays, initial_bet, preference, target_balance if target_balance > 0 else None)
+samples = sample(martingale, repeats, initial_balance, num_plays, initial_bet, preference, target_balance, floor_balance)
 martingale_df = dataframe_conversion(samples)
 
 # Initializes fig objects for our plots
-line_plt = line_plot(martingale, num_plays, initial_balance, initial_bet, preference)
+line_plt = line_plot(martingale, num_plays, initial_balance, initial_bet, preference, target_balance)
 frequency_plt = frequency_plot(martingale_df, initial_balance, repeats, graph_width)
 box_plt = box_plot(martingale_df, initial_balance, repeats, graph_width)
 stats_tbl = stats_table(martingale_df, initial_balance)
