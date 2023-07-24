@@ -42,16 +42,6 @@ st.latex(r'''
         \text{EV (win)} &= (p \times \text{Profit per win}) - (q \times \text{Loss per loss}) = (0.4865 \times 10) - (0.5135 \times 10) = -0.275.
     \end{align*}
     ''')
-st.latex(r'''
-    \begin{align*}
-        \text{EV (loss)} &= (q \times \text{Loss per loss}) - (p \times \text{Profit per win}) = (0.5135 \times 20) - (0.4865 \times 10) = -2.815.
-    \end{align*}     
-    ''')
-st.latex(r'''
-\begin{align*}
-    \text{EV (one round)} &= (p \times \text{EV (win)}) + (q \times \text{EV (loss)}) \approx -1.580.
-\end{align*}
-    ''')
 st.write("As you can see, given an initial bet of 10 dollars, we are expected to lose around 1.58 dollars on every round that we play. However, we have different betting \
         systems that you are free to play around with to try and find a 'winning' strategy. Keep in mind that not every strategy is foolproof, and especially for roulette, \
         it is almost nearly impossible to find a completely winning strategy. These visualizations are meant to serve as fun observations, not guidelines for your \
