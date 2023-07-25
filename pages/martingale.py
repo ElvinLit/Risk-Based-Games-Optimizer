@@ -15,7 +15,6 @@ st.set_page_config(
 # Add page to list of pages
 add_page_title()
 
-# ----- BACKEND ----- #
 
 # Martingale implementation
 def martingale(initial_balance, num_plays, initial_bet, preference, target_balance, floor_balance = 0):
@@ -50,8 +49,6 @@ def martingale(initial_balance, num_plays, initial_bet, preference, target_balan
             bet *= 2
     return balance
 
-
-# ----- FRONTEND ----- #
 
 # Setting columns
 col1, col2 = st.columns([1,1])

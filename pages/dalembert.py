@@ -15,7 +15,6 @@ st.set_page_config(
 # Add page to list of pages
 add_page_title()
 
-# ----- BACKEND ----- #
 
 # D'Alembert implementation
 def dalembert(initial_balance, num_plays, base_bet, preference, target_balance, floor_balance = 0):
@@ -54,8 +53,6 @@ def dalembert(initial_balance, num_plays, base_bet, preference, target_balance, 
                 bet = balance
     return balance
 
-
-# ----- FRONTEND ----- #
 
 # Setting columns
 col1, col2 = st.columns([1,1])

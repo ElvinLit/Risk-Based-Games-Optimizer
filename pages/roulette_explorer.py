@@ -12,9 +12,6 @@ st.set_page_config(
 # Add page to list of pages
 add_page_title()
 
-# ----- BACKEND ----- #
-
-# ----- FRONTEND ----- #
 st.markdown(
     """
     <style>
