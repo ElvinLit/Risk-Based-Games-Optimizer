@@ -14,27 +14,6 @@ def roulette_plot(line_plot, frequency_plot, box_plot, stats_table):
         None
     """
     # Assigning statistical data
-    mean, median, max, min, stdev, mode, percentage_win, percentage_lose = stats_table
-
-    # Setting up data text
-    formatted_text = f"""
-    <center>
-
-    **Descriptive Statistics**
-
-    |                    |                         |
-    |--------------------|-------------------------|
-    | **Mean**           | {mean}                  |
-    | **Median**         | {median}                |
-    | **Max**            | {max}                   |
-    | **Min**            | {min}                   |
-    | **Mode**           | {mode}                  |
-    | **Standard Deviation** | {stdev}            |
-    | **Chance of gaining money** | {percentage_win} |
-    | **Chance of losing money**  | {percentage_lose} |
-
-    </center>
-    """
 
     col1, col2 = st.columns([1, 1])
     with col1:
@@ -45,7 +24,7 @@ def roulette_plot(line_plot, frequency_plot, box_plot, stats_table):
     with col3:
         st.pyplot(box_plot, use_container_width=True)
     with col4:
-        st.markdown(formatted_text, unsafe_allow_html=True)
+        st.markdown(stats_table, unsafe_allow_html=True)
     
 def styling_configurations(fig, ax):
     """
@@ -242,4 +221,24 @@ def stats_table(df, initial_balance):
     percentage_lose = df[df['Balance'] < initial_balance].shape[0] / df.shape[0] * 100
     percentage_lose_str = f"{percentage_lose:.2f}%"
     
-    return mean, median, max, min, stdev, mode, percentage_win_str, percentage_lose_str
+    # Setting up data text
+    stats_table = f"""
+    <center>
+
+    **Descriptive Statistics**
+
+    |                    |                         |
+    |--------------------|-------------------------|
+    | **Mean**           | {mean}                  |
+    | **Median**         | {median}                |
+    | **Max**            | {max}                   |
+    | **Min**            | {min}                   |
+    | **Mode**           | {mode}                  |
+    | **Standard Deviation** | {stdev}            |
+    | **Chance of gaining money** | {percentage_win} |
+    | **Chance of losing money**  | {percentage_lose} |
+
+    </center>
+    """
+
+    return stats_table
