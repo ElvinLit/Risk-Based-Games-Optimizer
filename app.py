@@ -9,9 +9,9 @@ show_pages(
     [
         Page("app.py", "Game Theory Analyzer", "🏠"),
         Section(name = "Roulette Betting Strategies"),
-        Page("pages/roulette_explorer.py", "About", '❔'),
-        Page("pages/martingale.py", "Martingale System", "📖"),
-        Page("pages/reverse_martingale.py", "Reverse Martingale System", "📖"),
-        Page("pages/dalembert.py", "D'Alembert System", "📖")
+        Page("pages/roulette/roulette_explorer.py", "About", '❔'),
+        Page("pages/roulette/martingale.py", "Martingale System", "📖"),
+        Page("pages/roulette/reverse_martingale.py", "Reverse Martingale System", "📖"),
+        Page("pages/roulette/dalembert.py", "D'Alembert System", "📖")
     ]
 )
