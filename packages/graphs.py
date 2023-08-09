@@ -17,11 +17,110 @@ def roulette_plot(line_plot, frequency_plot, box_plot, stats_table):
     col1, col2 = st.columns([1, 1])
     with col1:
         st.pyplot(line_plot, use_container_width=True)
+        tooltip_css1 = """
+        .tooltip1 {
+        position: relative;
+        display: block;
+        }
+
+        .tooltip1::after {
+        content: "This graph is a scatterplot that reveals various ending balances that occured in samples with the corresponding number of plays";
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #333;
+        color: #fff;
+        padding: 5px;
+        border-radius: 5px;
+        font-size: 12px;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.2s, visibility 0.2s;
+        }
+
+        .tooltip1:hover::after {
+        opacity: 1;
+        visibility: visible;
+        }
+        """
+
+        # Add the CSS to the Streamlit app
+        st.markdown(f'<style>{tooltip_css1}</style>', unsafe_allow_html=True)
+
+        # Add the tooltip-like element
+        st.markdown('<div class="tooltip1">Info</div>', unsafe_allow_html=True)
     with col2:
         st.pyplot(frequency_plot, use_container_width=True)
+        tooltip_css2 = """
+        .tooltip2 {
+        position: relative;
+        display: block;
+        }
+
+        .tooltip2::after {
+        content: "This graph is a histogram that displays the frequency of each ending balance amount of the sample repititions";
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #333;
+        color: #fff;
+        padding: 5px;
+        border-radius: 5px;
+        font-size: 12px;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.2s, visibility 0.2s;
+        }
+
+        .tooltip2:hover::after {
+        opacity: 1;
+        visibility: visible;
+        }
+        """
+
+        # Add the CSS to the Streamlit app
+        st.markdown(f'<style>{tooltip_css2}</style>', unsafe_allow_html=True)
+
+        # Add the tooltip-like element
+        st.markdown('<div class="tooltip2">Info</div>', unsafe_allow_html=True)
     col3, col4 = st.columns([1, 1])
     with col3:
         st.pyplot(box_plot, use_container_width=True)
+        tooltip_css3 = """
+        .tooltip3 {
+        position: relative;
+        display: block;
+        }
+
+        .tooltip3::after {
+        content: "This graph is a box and whisker plot that denotes the descriptive statistics of all samples in one run of the algorithm based on parameters set by the user.";
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #333;
+        color: #fff;
+        padding: 5px;
+        border-radius: 5px;
+        font-size: 12px;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.2s, visibility 0.2s;
+        }
+
+        .tooltip3:hover::after {
+        opacity: 1;
+        visibility: visible;
+        }
+        """
+
+        # Add the CSS to the Streamlit app
+        st.markdown(f'<style>{tooltip_css3}</style>', unsafe_allow_html=True)
+
+        # Add the tooltip-like element
+        st.markdown('<div class="tooltip3">Info</div>', unsafe_allow_html=True)       
     with col4:
         st.markdown(stats_table, unsafe_allow_html=True)
     
