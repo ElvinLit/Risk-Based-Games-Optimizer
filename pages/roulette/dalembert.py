@@ -7,7 +7,7 @@ from packages.data_manipulation import sample, dataframe_conversion
 # Setting page configuration
 st.set_page_config(
     page_title="D'Alembert",
-    page_icon=":flower_playing_cards:",
+    page_icon=":blue_book:",
     layout="wide",
     initial_sidebar_state="collapsed" 
 )

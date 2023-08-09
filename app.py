@@ -7,7 +7,7 @@ add_page_title()
 # Create sidebar with list of pages
 show_pages(
     [
-        Page("app.py", "Game Theory Analyzer", "🏠"),
+        Page("app.py", "Game Data Analytics", ":game_die:"),
         Section(name = "Roulette Betting Strategies"),
         Page("pages/roulette/roulette_overview.py", "About", '❔'),
         Page("pages/roulette/martingale.py", "Martingale System", "📖"),
@@ -20,3 +20,10 @@ show_pages(
         Page("pages/blackjack/halves.py", "Halves", ":flower_playing_cards:")
     ]
 )
+
+# Adding Graphics and Text to home page
+col1, col2 = st.columns([1, 1])
+#with col1:
+st.write("This web application was designed to analyze strategies for risk-based games, specifically focusing on roulette and blackjack. Statistical data for these games, as processed by our algorithms, are presented on the subsequent pages.")
+image_url = "https://www.degonline.org/wp-content/uploads/2022/11/data-stock-photo.jpg" 
+st.image(image_url, use_column_width=True)
