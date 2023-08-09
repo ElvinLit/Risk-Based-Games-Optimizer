@@ -1,11 +1,23 @@
 import random
 
-
 class Card:
+    """
+    Represents a playing card.
+
+    Attributes:
+        value (str): The value of the card.
+
+    Methods:
+        get_value: Returns the integer value of the card.
+        __str__: Returns the string representation of the card.
+    """
+
     def __init__(self, value):
+        """Initialize a Card object with a given value."""
         self.value = value
 
     def get_value(self):
+        """Returns the integer value of the card."""
         if self.value in ['J', 'Q', 'K']:
             return 10
         elif self.value == 'A':
@@ -14,29 +26,59 @@ class Card:
             return int(self.value)
 
     def __str__(self):
+        """Returns the string representation of the card's value."""
         return self.value
 
 
 class Deck:
+    """
+    Represents a deck of playing cards.
+
+    Attributes:
+        cards (list): A list of Card objects.
+
+    Methods:
+        deal_card: Removes and returns a random card from the deck.
+        show_deck: Returns a string representation of all the cards in the deck.
+    """
     def __init__(self):
+        """Initialize a Deck object with 52 shuffled cards."""
         self.cards = [Card(val) for val in ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']] * 4
         random.shuffle(self.cards)
 
     def deal_card(self):
+        """Removes and returns a random card from the deck."""
         return self.cards.pop(random.randint(0, len(self.cards) - 1))
 
     def show_deck(self):
+        """Returns a string representation of all the cards in the deck."""
         return ', '.join(str(card) for card in self.cards)
     
 
 class Hand:
+    """
+    Represents a hand of playing cards.
+
+    Attributes:
+        cards (list): A list of Card objects.
+
+    Methods:
+        add_card: Adds a Card object to the hand.
+        get_value: Returns the total value of the cards in the hand.
+        is_soft_hand: Returns whether the hand is soft (contains an Ace counted as 11).
+        __str__: Returns the string representation of the cards in the hand.
+    """
+
     def __init__(self):
+        """Initialize a Hand object with an empty list."""
         self.cards = []
 
     def add_card(self, card):
+        """Adds a Card object to the hand."""
         self.cards.append(card)
 
     def get_value(self):
+        """Returns the total value of the cards in the hand."""
         value = sum(card.get_value() for card in self.cards)
         aces = sum(1 for card in self.cards if card.value == 'A')
         while value > 21 and aces:
@@ -45,19 +87,35 @@ class Hand:
         return value
     
     def is_soft_hand(self):
-        # Check if the hand is soft (contains an ace counted as 11)
+        """Returns whether the hand is soft (contains an Ace counted as 11)."""
         value = sum(card.get_value() for card in self.cards)
         return value <= 21 and any(card.value == 'A' for card in self.cards)
 
     def __str__(self):
+        """Returns the string representation of the cards in the hand."""
         return ', '.join([card.value for card in self.cards])
 
 
 class CardCounter:
+    """
+    Represents a card counter using different counting systems.
+
+    Attributes:
+        running_count (int): The current running count.
+
+    Methods:
+        high_low: Updates the count using the Hi-Lo system.
+        halves: Updates the count using the Halves system.
+        zen: Updates the count using the Zen system.
+        get_running_count: Returns the current running count.
+        reset_count: Resets the running count to 0.
+    """
     def __init__(self):
+        """Initialize a CardCounter object with a running count of 0."""
         self.running_count = 0
 
     def high_low(self, card):
+        """Updates the count using the Hi-Lo system."""
         value = card.get_value()
         if value in [2, 3, 4, 5, 6]:
             self.running_count += 1
@@ -65,6 +123,7 @@ class CardCounter:
             self.running_count -= 1
 
     def halves(self, card):
+        """Updates the count using the Halves system."""
         value = card.get_value()
         if value == 2:
             self.running_count += 0.5
@@ -80,6 +139,7 @@ class CardCounter:
             self.running_count -= 1
     
     def zen(self, card):
+        """Updates the count using the Zen system."""
         value = card.get_value()
         if value in [2, 3, 7]:
             self.running_count += 1
@@ -92,9 +152,11 @@ class CardCounter:
                 self.running_count -= 2
 
     def get_running_count(self):
+        """Returns the current running count."""
         return self.running_count
 
     def reset_count(self):
+        """Resets the running count to 0."""
         self.running_count = 0
 
 
@@ -146,6 +208,12 @@ def hit_or_stand(player_hand, dealer_upcard, count):
 def illustrious_18(player_value, dealer_value, count):
     """
     Defines illustrious 18 combinations
+    Args:
+        player_value (int): value of the player's cards
+        dealer_value (int): value of the dealer's cards
+        count (int): running count
+    Returns:
+        None, True, or False, represents an action with True being to hit, False being to stand, and None being none of the conditions being met
     """
     
     # (player_value, dealer_value, count, action, operator)
