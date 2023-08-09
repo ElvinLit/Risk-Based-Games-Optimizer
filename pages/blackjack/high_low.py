@@ -28,6 +28,7 @@ def blackjack_hl_simulator(num_plays):
 
     num_wins = 0
     num_draws = 0
+    num_losses = 0
     
     for _ in range(num_plays):
         # New hands
@@ -75,5 +76,9 @@ def blackjack_hl_simulator(num_plays):
             num_wins += 1
         elif player_hand.get_value() == dealer_hand.get_value():
             num_draws += 1 
+        else:
+            num_losses +=1 
     
-    return num_wins, num_draws, num_plays - num_wins - num_draws, num_plays
+    return num_wins, num_draws, num_losses, num_plays
+
+st.write(blackjack_hl_simulator(100))
