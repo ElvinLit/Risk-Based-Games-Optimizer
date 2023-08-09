@@ -20,6 +20,7 @@ class Card:
 class Deck:
     def __init__(self):
         self.cards = [Card(val) for val in ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']] * 4
+        random.shuffle(self.cards)
 
     def deal_card(self):
         return self.cards.pop(random.randint(0, len(self.cards) - 1))
@@ -42,6 +43,11 @@ class Hand:
             value -= 10
             aces -= 1
         return value
+    
+    def is_soft_hand(self):
+        # Check if the hand is soft (contains an ace counted as 11)
+        value = sum(card.get_value() for card in self.cards)
+        return value <= 21 and any(card.value == 'A' for card in self.cards)
 
     def __str__(self):
         return ', '.join([card.value for card in self.cards])
@@ -90,3 +96,38 @@ class CardCounter:
 
     def reset_count(self):
         self.running_count = 0
+
+def basic_strategy(player_hand, dealer_upcard):
+    """
+    Follows basic strategy chart
+
+    Args:
+        player_hand (Hand obj)
+        dealer_upcard (Card Obj)
+
+    Returns:
+        boolean: True if we should hit, False to stay
+    """
+    player_value = player_hand.get_value()
+    dealer_value = dealer_upcard.get_value()
+    soft_hand = player_hand.is_soft_hand()
+
+    # Hit on <= 11
+    if player_value <= 11:
+        return True
+    
+    # Checks soft hand case (Ace)
+    if soft_hand:
+        if player_value == 18:
+            return dealer_value in [9, 10, 11]
+        return player_value < 18
+
+    # Special cases for 12-16
+    if 12 <= player_value <= 16:
+        if 2 <= dealer_value <= 6:
+            return False
+        else: 
+            return True
+        
+    # Stand on 17+
+    return False
