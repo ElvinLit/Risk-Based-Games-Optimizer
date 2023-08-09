@@ -6,7 +6,7 @@ st.set_page_config(
     page_title="Roulette Strategy Explorer",
     page_icon=":orange_book:",
     layout="wide",
-    initial_sidebar_state="collapsed" 
+    initial_sidebar_state="expanded" 
 )
 
 # Add page to list of pages
