@@ -97,20 +97,30 @@ class CardCounter:
     def reset_count(self):
         self.running_count = 0
 
-def basic_strategy(player_hand, dealer_upcard):
+
+def hit_or_stand(player_hand, dealer_upcard, count):
     """
-    Follows basic strategy chart
+    Follows basic strategy chart integrated with illustrious 18
 
     Args:
         player_hand (Hand obj)
         dealer_upcard (Card Obj)
+        count(int)
 
     Returns:
-        boolean: True if we should hit, False to stay
+        boolean: True if we should hit, False to stand
     """
+
     player_value = player_hand.get_value()
     dealer_value = dealer_upcard.get_value()
     soft_hand = player_hand.is_soft_hand()
+
+    ### Illustrious 18 defined
+    action = illustrious_18(player_value, dealer_value, count)
+    if action is not None:
+        return action
+
+    ### Basic Strategy continues if nothing satisfies illustrious 18 
 
     # Hit on <= 11
     if player_value <= 11:
@@ -131,3 +141,37 @@ def basic_strategy(player_hand, dealer_upcard):
         
     # Stand on 17+
     return False
+
+
+def illustrious_18(player_value, dealer_value, count):
+    """
+    Defines illustrious 18 combinations
+    """
+    
+    # (player_value, dealer_value, count, action, operator)
+    rules = [
+        (16, 10, 0, False, '>='),
+        (15, 10, 4, False, '>='),
+        (10, 10, 3, True, '>='),
+        (12, 3, 3, False, '>='),
+        (12, 2, 4, False, '>='),
+        (9, 2, 1, True, '>='),
+        (9, 7, 4, True, '>='),
+        (16, 9, 5, False, '>='),
+        (13, 2, 0, True, '<='),
+        (12, 4, 1, True, '<='),
+        (12, 5, 0, True, '<='),
+        (13, 3, -1, True, '<='),
+    ]
+
+    # Check if the current situation matches any rule
+    for rule in rules:
+        player_val, dealer_val, rule_count, action, comparison = rule
+        if player_value == player_val and dealer_value == dealer_val:
+            if comparison == '>=' and count >= rule_count:
+                return action
+            elif comparison == '<=' and count <= rule_count:
+                return action
+
+    # If no rule matches, return None to indicate no special action
+    return None
