@@ -15,13 +15,23 @@ st.set_page_config(
 # Add page to list of pages
 add_page_title()
 
+col1, col2 = st.columns([1,1])
+
+with col1:
+    # Description of Strategy
+    st.write("The halves counting strategy in blackjack is a balanced card counting system \
+             that is more advanced than some of the entry-level systems like Hi-Lo. In this \
+             method, different cards are assigned various point values to help players keep \
+             track of the ratio of high to low cards remaining in the deck.")
+    st.write("")
+
 def blackjack_halves_simulator(num_plays):
     """
     Simulates a Blackjack game using the halves counting strategy. 
     Args:
         num_plays (int): number of plays for the simulation
     Returns:
-        DataFrame: contains information with columns ['Win', 'Loss', 'Draw', 'Play Count']
+        DataFrame: contains information with columns ['Win', 'Loss', 'Draw', 'Running Count', 'Play Count']
     """
 
     deck = Deck()
@@ -31,12 +41,12 @@ def blackjack_halves_simulator(num_plays):
     num_draws = 0
     num_losses = 0
     
-    df = pd.DataFrame(columns=['Win', 'Loss', 'Draw', 'Play Count'])
+    df = pd.DataFrame(columns=['Win', 'Loss', 'Draw', 'Running Count', 'Play Count'])
 
     for i in range(num_plays):
 
         # Initialize our row for the dataframe
-        row = [None] * 4
+        row = [None] * 5
         
         # New hands each round
         player_hand = Hand()
@@ -86,8 +96,12 @@ def blackjack_halves_simulator(num_plays):
         else:
             row[1] = 1
         
-        row[3] = i + 1
+        # Play Count
+        row[4] = i + 1
         
+        # Running Count
+        row[3] = counter.get_running_count()
+
         # Append row to dataframe
         df.loc[len(df)] = row
     
