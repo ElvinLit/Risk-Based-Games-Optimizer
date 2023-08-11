@@ -42,10 +42,6 @@ def blackjack_halves_simulator(num_plays):
 
     deck = Deck()
     counter = CardCounter()
-
-    num_wins = 0
-    num_draws = 0
-    num_losses = 0
     
     df = pd.DataFrame(columns=['Win', 'Loss', 'Draw', 'Running Count', 'Play Count', 'Player Hand Value', 'Dealer Hand Value'])
 
@@ -93,7 +89,9 @@ def blackjack_halves_simulator(num_plays):
             dealer_hand.add_card(deck.deal_card())
         
         # Conditions
-        if dealer_hand.get_value() > 21:
+        if player_hand.get_value() > 21:
+            row[1] = 1
+        elif dealer_hand.get_value() > 21:
             row[0] = 1
         elif player_hand.get_value() > dealer_hand.get_value():
             row[0] = 1

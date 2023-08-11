@@ -75,7 +75,9 @@ def blackjack_hl_simulator(num_plays):
             dealer_hand.add_card(deck.deal_card())
         
         # Conditions
-        if dealer_hand.get_value() > 21:
+        if player_hand.get_value() > 21:
+            row[1] = 1
+        elif dealer_hand.get_value() > 21:
             row[0] = 1
         elif player_hand.get_value() > dealer_hand.get_value():
             row[0] = 1
