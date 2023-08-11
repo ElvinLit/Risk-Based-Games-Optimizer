@@ -2,6 +2,7 @@ import streamlit as st
 from st_pages import add_page_title
 import random
 from packages.blackjack_logic import Deck, CardCounter, Hand, hit_or_stand
+import pandas as pd
 
 # Setting page configuration
 st.set_page_config(
@@ -16,11 +17,11 @@ add_page_title()
 
 def blackjack_hl_simulator(num_plays):
     """
-    Simulates a Blackjack game using the zen counting strategy. 
+    Simulates a Blackjack game using the high low counting strategy. 
     Args:
         num_plays (int): number of plays for the simulation
     Returns:
-        tuple: (number of wins, number of draws, number of losses, number of plays)
+        DataFrame: contains information with columns ['Win', 'Loss', 'Draw', 'Play Count']
     """
 
     deck = Deck()
@@ -30,7 +31,12 @@ def blackjack_hl_simulator(num_plays):
     num_draws = 0
     num_losses = 0
     
-    for _ in range(num_plays):
+    df = pd.DataFrame(columns=['Win', 'Loss', 'Draw', 'Play Count'])
+
+    for i in range(num_plays):
+
+        # Initialize our row for the dataframe
+        row = [None] * 4
         
         # New hands each round
         player_hand = Hand()
@@ -41,8 +47,8 @@ def blackjack_hl_simulator(num_plays):
             deck = Deck() 
             counter.reset_count()
 
-        #Initial Dealing, 2 cards each, assume only the dealer's first card is shown to the player
-        for i in range(2):
+        # Initial Dealing, 2 cards each, assume only the dealer's first card is shown to the player
+        for j in range(2):
             player_card = deck.deal_card()
             dealer_card = deck.deal_card()
 
@@ -50,10 +56,10 @@ def blackjack_hl_simulator(num_plays):
             dealer_hand.add_card(dealer_card)
 
             counter.high_low(player_card)
-            if i == 0:
+            if j == 0:
                 counter.high_low(dealer_card)
         
-        #Modify the count based on shown cards
+        # Modify the count based on shown cards
         count = counter.get_running_count()
             
         # Hit or Stand
@@ -72,14 +78,19 @@ def blackjack_hl_simulator(num_plays):
         
         # Conditions
         if dealer_hand.get_value() > 21:
-            num_wins += 1
+            row[0] = 1
         elif player_hand.get_value() > dealer_hand.get_value():
-            num_wins += 1
+            row[0] = 1
         elif player_hand.get_value() == dealer_hand.get_value():
-            num_draws += 1 
+            row[2] = 1
         else:
-            num_losses +=1 
+            row[1] = 1
+        
+        row[3] = i + 1
+        
+        # Append row to dataframe
+        df.loc[len(df)] = row
     
-    return num_wins, num_draws, num_losses, num_plays
+    return df
 
-st.write(blackjack_hl_simulator(100))
+st.dataframe(blackjack_hl_simulator(100))
