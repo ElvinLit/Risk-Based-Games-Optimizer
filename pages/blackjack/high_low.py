@@ -16,7 +16,7 @@ add_page_title()
 
 def blackjack_hl_simulator(num_plays):
     """
-    Simulates a Blackjack game using the high-low counting strategy. 
+    Simulates a Blackjack game using the zen counting strategy. 
     Args:
         num_plays (int): number of plays for the simulation
     Returns:
@@ -31,7 +31,8 @@ def blackjack_hl_simulator(num_plays):
     num_losses = 0
     
     for _ in range(num_plays):
-        # New hands
+        
+        # New hands each round
         player_hand = Hand()
         dealer_hand = Hand()
 
