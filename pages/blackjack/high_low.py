@@ -28,17 +28,13 @@ def blackjack_hl_simulator(num_plays):
 
     deck = Deck()
     counter = CardCounter()
-
-    num_wins = 0
-    num_draws = 0
-    num_losses = 0
     
-    df = pd.DataFrame(columns=['Win', 'Loss', 'Draw', 'Running Count', 'Play Count'])
+    df = pd.DataFrame(columns=['Win', 'Loss', 'Draw', 'Running Count', 'Play Count', 'Player Hand Value', 'Dealer Hand Value'])
 
     for i in range(num_plays):
 
         # Initialize our row for the dataframe
-        row = [None] * 5
+        row = [None] * 7
         
         # New hands each round
         player_hand = Hand()
@@ -88,11 +84,14 @@ def blackjack_hl_simulator(num_plays):
         else:
             row[1] = 1
         
-        # Playing Count
+        # Play Count
         row[4] = i + 1
-
         # Running Count
         row[3] = counter.get_running_count()
+        # Player Hand
+        row[5] = player_hand.get_value()
+        # Dealer Hand
+        row[6] = dealer_hand.get_value()
         
         # Append row to dataframe
         df.loc[len(df)] = row

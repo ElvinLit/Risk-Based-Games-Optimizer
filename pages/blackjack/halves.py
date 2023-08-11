@@ -23,7 +23,13 @@ with col1:
              that is more advanced than some of the entry-level systems like Hi-Lo. In this \
              method, different cards are assigned various point values to help players keep \
              track of the ratio of high to low cards remaining in the deck.")
-    st.write("")
+    st.write("The count values are as follows:")
+    st.text('-0.5: 9s')
+    st.text('-1: 10s, Face Cards, and Aces')
+    st.text('+0: 8s')
+    st.text('+0.5: 2s and 7s')
+    st.text('+1: 3s, 4s, and 6s')
+    st.text('+1.5: 5s')
 
 def blackjack_halves_simulator(num_plays):
     """
@@ -31,7 +37,7 @@ def blackjack_halves_simulator(num_plays):
     Args:
         num_plays (int): number of plays for the simulation
     Returns:
-        DataFrame: contains information with columns ['Win', 'Loss', 'Draw', 'Running Count', 'Play Count']
+        DataFrame: contains information with columns ['Win', 'Loss', 'Draw', 'Running Count', 'Play Count', 'Player Hand Value', 'Dealer Hand Value']
     """
 
     deck = Deck()
@@ -41,12 +47,12 @@ def blackjack_halves_simulator(num_plays):
     num_draws = 0
     num_losses = 0
     
-    df = pd.DataFrame(columns=['Win', 'Loss', 'Draw', 'Running Count', 'Play Count'])
+    df = pd.DataFrame(columns=['Win', 'Loss', 'Draw', 'Running Count', 'Play Count', 'Player Hand Value', 'Dealer Hand Value'])
 
     for i in range(num_plays):
 
         # Initialize our row for the dataframe
-        row = [None] * 5
+        row = [None] * 7
         
         # New hands each round
         player_hand = Hand()
@@ -98,9 +104,12 @@ def blackjack_halves_simulator(num_plays):
         
         # Play Count
         row[4] = i + 1
-        
         # Running Count
         row[3] = counter.get_running_count()
+        # Player Hand
+        row[5] = player_hand.get_value()
+        # Dealer Hand
+        row[6] = dealer_hand.get_value()
 
         # Append row to dataframe
         df.loc[len(df)] = row
