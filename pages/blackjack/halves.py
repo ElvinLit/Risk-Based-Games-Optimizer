@@ -16,7 +16,7 @@ add_page_title()
 
 def blackjack_halves_simluator(num_plays):
     """
-    Simulates a Blackjack game using the high-low counting strategy. 
+    Simulates a Blackjack game using the halves counting strategy. 
     Args:
         num_plays (int): number of plays for the simulation
     Returns:
