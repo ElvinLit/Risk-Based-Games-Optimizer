@@ -361,7 +361,7 @@ def blackjack_histogram(df, num_plays):
     ax.bar(categories, values, color='white', edgecolor='black')
 
     # Labels
-    ax.set_title("Bar Chart of wins, losses, and draws, n = " + str(num_plays), color = 'white')
+    ax.set_title("Bar Chart for wins, losses, and draws in 1 game, n = " + str(num_plays), color = 'white')
     ax.set_xlabel("Ending Balance", color = 'white')
     ax.set_ylabel("Frequency", color = 'white')
     for label in ax.get_xticklabels():
@@ -370,3 +370,5 @@ def blackjack_histogram(df, num_plays):
         label.set_color(color = 'white')
 
     return fig
+
+

@@ -2,8 +2,9 @@ import streamlit as st
 from st_pages import add_page_title
 import random
 from packages.blackjack_logic import Deck, CardCounter, Hand, Player, hit_or_stand, double_down
-from packages.graphs import blackjack_histogram
+from packages.graphs import blackjack_histogram, styling_configurations
 import pandas as pd
+import matplotlib.pyplot as plt 
 
 # Setting page configuration
 st.set_page_config(
@@ -120,11 +121,41 @@ def blackjack_hl_simulator(num_plays, starting_bankroll, base_bet):
     
     return df
 
-st.pyplot(blackjack_histogram(blackjack_hl_simulator(1000, 1000, 50), 1000))
+df_info = blackjack_hl_simulator(1000, 1000, 50)
+
+st.pyplot(blackjack_histogram(df_info, 1000))
+
+def blackjack_lineplot(num_plays, starting_bankroll, base_bet, repetitions):
+    
+    # Plotting configurations
+    fig, ax = plt.subplots()
+    styling_configurations(fig, ax)
+
+    # Setting size 
+    fig.set_size_inches(10,4)
+
+    # Labels
+    ax.set_title("Scatterplot for Number of Plays vs. Ending Balance", color = 'white')
+    ax.set_xlabel("Number of Plays", color = 'white')
+    ax.set_ylabel("Ending Balances", color = 'white')
+    
+    styling_configurations(fig, ax)
+    for label in ax.get_xticklabels():
+        label.set_color('white')
+    for label in ax.get_yticklabels():
+        label.set_color(color = 'white')
+
+    for _ in range(repetitions):
+        df = blackjack_hl_simulator(num_plays, starting_bankroll, base_bet)
+        ax.plot(df['Play Count'], df['Balance'])
+
+    return fig
 
 
-st.dataframe(blackjack_hl_simulator(1000, 1000, 50))
+st.pyplot(blackjack_lineplot(1000, 1000, 50, 20))
 
-st.write(blackjack_hl_simulator(1000, 1000, 50)['Win'].sum())
-st.write(blackjack_hl_simulator(1000, 1000, 50)['Loss'].sum())
-st.write(blackjack_hl_simulator(1000, 1000, 50)['Draw'].sum())
+st.dataframe(df_info)
+
+st.write(df_info['Win'].sum())
+st.write(df_info['Loss'].sum())
+st.write(df_info['Draw'].sum())
