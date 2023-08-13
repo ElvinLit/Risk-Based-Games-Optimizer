@@ -159,6 +159,53 @@ class CardCounter:
         """Resets the running count to 0."""
         self.running_count = 0
 
+class Player:
+    """
+    Represents a player in the blackjack game.
+
+    Attributes:
+        bankroll (float): The current amount of money the player has.
+        bet_size (float): The current bet size.
+
+    Methods:
+        place_bet: Places a bet and deducts the amount from the bankroll.
+        win: Adds the bet amount to the bankroll.
+        lose: No action required as the bet has already been placed.
+        draw: Returns the bet to the bankroll.
+        get_bankroll: Returns the current bankroll.
+        set_bet_size: Sets the bet size for the next hand.
+    """
+
+    def __init__(self, starting_bankroll):
+        """Initialize a Player object with a given bankroll."""
+        self.bankroll = starting_bankroll
+        self.bet_size = 0
+
+    def place_bet(self, bet_size):
+        """Places a bet and deducts the amount from the bankroll."""
+        self.bet_size = bet_size
+        self.bankroll -= bet_size
+
+    def win(self):
+        """Adds the bet amount to the bankroll."""
+        self.bankroll += self.bet_size * 2
+
+    def lose(self):
+        """No action required as the bet has already been placed."""
+        pass
+
+    def draw(self):
+        """Returns the bet to the bankroll."""
+        self.bankroll += self.bet_size
+
+    def get_bankroll(self):
+        """Returns the current bankroll."""
+        return self.bankroll
+
+    def set_bet_size(self, bet_size):
+        """Sets the bet size for the next hand."""
+        self.bet_size = bet_size
+
 
 def hit_or_stand(player_hand, dealer_upcard, count):
     """
@@ -241,5 +288,31 @@ def illustrious_18(player_value, dealer_value, count):
             elif comparison == '<=' and count <= rule_count:
                 return action
 
+    # If no rule matches, return None to indicate no special action
+    return None
+
+def double_down(player_value, dealer_value, count):
+    """
+    Defines scenarios to double down on a bet
+    Args:
+        player_value (int): value of the player's cards
+        dealer_value (int): value of the dealer's upcard
+        count (int): running count
+    Returns:
+        None, True, represents an action with True being to double down
+    """
+    rules = [
+        (10, 10, 3),
+        (10, 10, 4),
+        (9, 2, 1),
+        (9, 7, 4)
+    ]
+
+    # Check rules
+    for rule in rules:
+        player_val, dealer_val, rule_count = rule
+        if player_value == player_val and dealer_value == dealer_val and count == rule_count:
+            return True
+        
     # If no rule matches, return None to indicate no special action
     return None

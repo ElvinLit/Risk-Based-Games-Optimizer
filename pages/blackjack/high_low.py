@@ -1,7 +1,8 @@
 import streamlit as st
 from st_pages import add_page_title
 import random
-from packages.blackjack_logic import Deck, CardCounter, Hand, hit_or_stand
+from packages.blackjack_logic import Deck, CardCounter, Hand, Player, hit_or_stand, double_down
+from packages.graphs import blackjack_histogram
 import pandas as pd
 
 # Setting page configuration
@@ -17,24 +18,27 @@ add_page_title()
 
 col1, col2 = st.columns([1,1])
 
-def blackjack_hl_simulator(num_plays):
+def blackjack_hl_simulator(num_plays, starting_bankroll, base_bet):
     """
     Simulates a Blackjack game using the high low counting strategy. 
     Args:
         num_plays (int): number of plays for the simulation
+        starting_bankroll (float): starting amount of money for the player
+        base_bet (float): base bet size
     Returns:
         DataFrame: contains information with columns ['Win', 'Loss', 'Draw','Running Count', 'Play Count']
     """
 
     deck = Deck()
     counter = CardCounter()
+    player = Player(starting_bankroll)
     
-    df = pd.DataFrame(columns=['Win', 'Loss', 'Draw', 'Running Count', 'Play Count', 'Player Hand Value', 'Dealer Hand Value'])
+    df = pd.DataFrame(columns=['Win', 'Loss', 'Draw', 'Running Count', 'Play Count', 'Player Hand Value', 'Dealer Hand Value', 'Balance'])
 
     for i in range(num_plays):
 
         # Initialize our row for the dataframe
-        row = [None] * 7
+        row = [None] * 8
         
         # New hands each round
         player_hand = Hand()
@@ -44,6 +48,10 @@ def blackjack_hl_simulator(num_plays):
         if len(deck.cards) < 10: # Arbitrary threshold
             deck = Deck() 
             counter.reset_count()
+
+        # Set bet size based on count (you can modify the logic here)
+        bet_size = base_bet 
+        player.place_bet(bet_size)
 
         # Initial Dealing, 2 cards each, assume only the dealer's first card is shown to the player
         for j in range(2):
@@ -59,6 +67,11 @@ def blackjack_hl_simulator(num_plays):
         
         # Modify the count based on shown cards
         count = counter.get_running_count()
+        
+        # Double bet if applicable
+        if double_down(player_hand, dealer_hand.cards[0], count) == True:
+            player.place_bet(bet_size)
+            bet_size += base_bet
             
         # Hit or Stand
         while player_hand.get_value() < 21:
@@ -76,14 +89,19 @@ def blackjack_hl_simulator(num_plays):
         
         # Conditions
         if player_hand.get_value() > 21:
+            player.lose()
             row[1] = 1
         elif dealer_hand.get_value() > 21:
+            player.win()
             row[0] = 1
         elif player_hand.get_value() > dealer_hand.get_value():
+            player.win()
             row[0] = 1
         elif player_hand.get_value() == dealer_hand.get_value():
+            player.draw()
             row[2] = 1
         else:
+            player.lose()
             row[1] = 1
         
         # Play Count
@@ -94,10 +112,19 @@ def blackjack_hl_simulator(num_plays):
         row[5] = player_hand.get_value()
         # Dealer Hand
         row[6] = dealer_hand.get_value()
+        # Balance
+        row[7] = player.get_bankroll()
         
         # Append row to dataframe
         df.loc[len(df)] = row
     
     return df
 
-st.dataframe(blackjack_hl_simulator(100))
+st.pyplot(blackjack_histogram(blackjack_hl_simulator(1000, 1000, 50), 1000))
+
+
+st.dataframe(blackjack_hl_simulator(1000, 1000, 50))
+
+st.write(blackjack_hl_simulator(1000, 1000, 50)['Win'].sum())
+st.write(blackjack_hl_simulator(1000, 1000, 50)['Loss'].sum())
+st.write(blackjack_hl_simulator(1000, 1000, 50)['Draw'].sum())
