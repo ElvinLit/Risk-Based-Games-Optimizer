@@ -21,13 +21,11 @@ class Card:
         if self.value in ['J', 'Q', 'K']:
             return 10
         elif self.value == 'A':
-            return 11
+            return 1
         else:
             return int(self.value)
-
     def __str__(self):
-        """Returns the string representation of the card's value."""
-        return self.value
+        return f"{self.value}"
 
 
 class Deck:
@@ -47,12 +45,8 @@ class Deck:
         random.shuffle(self.cards)
 
     def deal_card(self):
-        """Removes and returns a random card from the deck."""
-        return self.cards.pop(random.randint(0, len(self.cards) - 1))
-
-    def show_deck(self):
-        """Returns a string representation of all the cards in the deck."""
-        return ', '.join(str(card) for card in self.cards)
+        """Removes and returns the top card from the deck."""
+        return self.cards.pop()
     
 
 class Hand:
@@ -81,19 +75,15 @@ class Hand:
         """Returns the total value of the cards in the hand."""
         value = sum(card.get_value() for card in self.cards)
         aces = sum(1 for card in self.cards if card.value == 'A')
-        while value > 21 and aces:
-            value -= 10
-            aces -= 1
+        if aces > 0 and value + 10 <= 21:
+            value += 10
         return value
     
     def is_soft_hand(self):
         """Returns whether the hand is soft (contains an Ace counted as 11)."""
-        value = sum(card.get_value() for card in self.cards)
-        return value <= 21 and any(card.value == 'A' for card in self.cards)
-
-    def __str__(self):
-        """Returns the string representation of the cards in the hand."""
-        return ', '.join([card.value for card in self.cards])
+        value_without_ace = sum(card.get_value() for card in self.cards if card.value != 'A')
+        aces_count = sum(1 for card in self.cards if card.value == 'A')
+        return aces_count > 0 and (value_without_ace + aces_count * 11) <= 21
 
 
 class CardCounter:
@@ -110,6 +100,7 @@ class CardCounter:
         get_running_count: Returns the current running count.
         reset_count: Resets the running count to 0.
     """
+
     def __init__(self):
         """Initialize a CardCounter object with a running count of 0."""
         self.running_count = 0
@@ -117,39 +108,38 @@ class CardCounter:
     def high_low(self, card):
         """Updates the count using the Hi-Lo system."""
         value = card.get_value()
-        if value in [2, 3, 4, 5, 6]:
+        if card.value == 'A':
+            self.running_count -= 1
+        elif value in [2, 3, 4, 5, 6]:
             self.running_count += 1
-        elif value in [10, 11]: # '10', 'J', 'Q', 'K', 'A'
+        elif value in [10]: # '10', 'J', 'Q', 'K'
             self.running_count -= 1
 
     def halves(self, card):
         """Updates the count using the Halves system."""
-        value = card.get_value()
-        if value == 2:
+        if card.value == '2':
             self.running_count += 0.5
-        elif value == 3 or value == 4 or value == 6:
+        elif card.value in ['3', '4', '6']:
             self.running_count += 1
-        elif value == 5:
+        elif card.value == '5':
             self.running_count += 1.5
-        elif value == 7:
+        elif card.value == '7':
             self.running_count += 0.5
-        elif value == 9:
+        elif card.value == '9':
             self.running_count -= 0.5
-        elif value in [10, 11]: # '10', 'J', 'Q', 'K', 'A'
+        elif card.value in ['10', 'J', 'Q', 'K', 'A']:
             self.running_count -= 1
-    
+
     def zen(self, card):
         """Updates the count using the Zen system."""
-        value = card.get_value()
-        if value in [2, 3, 7]:
+        if card.value in ['2', '3', '7']:
             self.running_count += 1
-        elif value in [4, 5, 6]:
+        elif card.value in ['4', '5', '6']:
             self.running_count += 2
-        elif value in [10, 11]: # '10', 'J', 'Q', 'K', 'A'
-            if card.value == 'A':
-                self.running_count -= 1
-            else:
-                self.running_count -= 2
+        elif card.value in ['10', 'J', 'Q', 'K']:
+            self.running_count -= 2
+        elif card.value == 'A':
+            self.running_count -= 1
 
     def get_running_count(self):
         """Returns the current running count."""
@@ -193,6 +183,11 @@ class Player:
     def lose(self):
         """No action required as the bet has already been placed."""
         pass
+    
+    def split(self, bet_size):
+        """Splits the current bet into two hands."""
+        self.bankroll -= bet_size
+        self.bet_size *= 2
 
     def draw(self):
         """Returns the bet to the bankroll."""
@@ -205,6 +200,39 @@ class Player:
     def set_bet_size(self, bet_size):
         """Sets the bet size for the next hand."""
         self.bet_size = bet_size
+        
+
+def should_split(player_hand, dealer_up_card):
+    """Returns True if the player should split the hand."""
+    if len(player_hand.cards) != 2 or player_hand.cards[0].value != player_hand.cards[1].value:
+        return False
+
+    pair_value = player_hand.cards[0].value
+    dealer_value = dealer_up_card.get_value()
+
+    if pair_value in ['8', 'A']:
+        return True
+    if pair_value in ['5', '10']:
+        return False
+    if pair_value in ['2', '3'] and dealer_value in [4, 5, 6, 7]:
+        return True
+    if pair_value == '6' and dealer_value in [3, 4, 5, 6]:
+        return True
+    if pair_value == '7' and dealer_value in [2, 3, 4, 5, 6, 7]:
+        return True
+    if pair_value == '9' and dealer_value in [2, 3, 4, 5, 6, 8, 9]:
+        return True
+
+    return False
+
+
+def split_hands(hand):
+    """Splits a hand into two new hands."""
+    new_hand1 = Hand()
+    new_hand2 = Hand()
+    new_hand1.add_card(hand.cards.pop(0))
+    new_hand2.add_card(hand.cards.pop(0))
+    return new_hand1, new_hand2
 
 
 def hit_or_stand(player_hand, dealer_upcard, count):
@@ -291,16 +319,10 @@ def illustrious_18(player_value, dealer_value, count):
     # If no rule matches, return None to indicate no special action
     return None
 
-def double_down(player_value, dealer_value, count):
-    """
-    Defines scenarios to double down on a bet
-    Args:
-        player_value (int): value of the player's cards
-        dealer_value (int): value of the dealer's upcard
-        count (int): running count
-    Returns:
-        None, True, represents an action with True being to double down
-    """
+def double_down(player_hand, dealer_upcard, count):
+    player_value = player_hand.get_value()
+    dealer_value = dealer_upcard.get_value()
+    
     rules = [
         (10, 10, 3),
         (10, 10, 4),
@@ -311,8 +333,8 @@ def double_down(player_value, dealer_value, count):
     # Check rules
     for rule in rules:
         player_val, dealer_val, rule_count = rule
-        if player_value == player_val and dealer_value == dealer_val and count == rule_count:
+        if player_value == player_val and dealer_value == dealer_val and count >= rule_count:  # Compare count with rule_count
             return True
         
-    # If no rule matches, return None to indicate no special action
-    return None
+    # If no rule matches, return False to indicate no special action
+    return False

@@ -1,7 +1,7 @@
 import streamlit as st
 from st_pages import add_page_title
 import random
-from packages.blackjack_logic import Deck, CardCounter, Hand, Player, hit_or_stand, double_down
+from packages.blackjack_logic import Deck, CardCounter, Hand, Player, hit_or_stand, double_down, should_split, split_hands
 from packages.graphs import blackjack_histogram, styling_configurations
 import pandas as pd
 import matplotlib.pyplot as plt 
@@ -34,23 +34,24 @@ def blackjack_hl_simulator(num_plays, starting_bankroll, base_bet):
     counter = CardCounter()
     player = Player(starting_bankroll)
     
-    df = pd.DataFrame(columns=['Win', 'Loss', 'Draw', 'Running Count', 'Play Count', 'Player Hand Value', 'Dealer Hand Value', 'Balance'])
+    df = pd.DataFrame(columns=['Win', 'Loss', 'Draw', 'Running Count', 'Play Count', 'Player Hand Value', 'Dealer Hand Value', 'Balance', 'Splitted', 'Doubled', 'First Card', 'Second Card', 'Dealer Upcard'])
 
-    for i in range(num_plays):
+    i = 0
+    while i < num_plays:
 
         # Initialize our row for the dataframe
-        row = [None] * 8
+        row = [0] * 13
         
         # New hands each round
         player_hand = Hand()
         dealer_hand = Hand()
 
         # Check for deck exhaustion 
-        if len(deck.cards) < 10: # Arbitrary threshold
+        if len(deck.cards) < 15: # Arbitrary threshold
             deck = Deck() 
             counter.reset_count()
 
-        # Set bet size based on count (you can modify the logic here)
+        # Set bet size 
         bet_size = base_bet 
         player.place_bet(bet_size)
 
@@ -66,64 +67,138 @@ def blackjack_hl_simulator(num_plays, starting_bankroll, base_bet):
             if j == 0:
                 counter.high_low(dealer_card)
         
-        # Modify the count based on shown cards
-        count = counter.get_running_count()
-        
-        # Double bet if applicable
-        if double_down(player_hand, dealer_hand.cards[0], count) == True:
-            player.place_bet(bet_size)
-            bet_size += base_bet
+        if should_split(player_hand, dealer_hand.cards[0]):
+            hand1, hand2 = split_hands(player_hand)
+            # You'll need to play both hands separately, adjusting bets and counts for each
             
-        # Hit or Stand
-        while player_hand.get_value() < 21:
-            action = hit_or_stand(player_hand, dealer_hand.cards[0], count)
-            if action:
-                new_card = deck.deal_card()
-                player_hand.add_card(new_card)
-                counter.high_low(new_card)
-            else:
-                break
+            # Play the dealer's hand (must be done after playing both of the player's hands)
+            while dealer_hand.get_value() < 17:
+                dealer_hand.add_card(deck.deal_card())
+            
+            for split_hand in [hand1, hand2]:
+                # Place the bet for the split hand
+                player.place_bet(bet_size)
+
+                if double_down(split_hand, dealer_hand.cards[0], counter.get_running_count()) == True:
+                    player.place_bet(bet_size)
+                    bet_size += base_bet
+                    row[9] = 1
+           
+                # Hit or Stand
+                while split_hand.get_value() < 21:
+                    action = hit_or_stand(split_hand, dealer_hand.cards[0], counter.get_running_count())
+                    if action:
+                        new_card = deck.deal_card()
+                        split_hand.add_card(new_card)
+                        counter.high_low(new_card)
+                    else:
+                        break
+                
+                # Determine win/loss/draw
+                if split_hand.get_value() > 21:
+                    player.lose()
+                    row[1] += 1
+                elif dealer_hand.get_value() > 21 or split_hand.get_value() > dealer_hand.get_value():
+                    player.win()
+                    row[0] += 1
+                elif split_hand.get_value() == dealer_hand.get_value():
+                    player.draw()
+                    row[2] += 1
+                else:
+                    player.lose()
+                    row[1] += 1
+                
+                # Player's Cards
+                row[10] = str(split_hand.cards[0])
+                row[11] = str(split_hand.cards[1])
+                # Dealer's Upcard
+                row[12] = str(dealer_hand.cards[0])
+                
+                # Play Count
+                row[4] = i + 1
+                # Running Count
+                row[3] = counter.get_running_count()
+                # Player Hand
+                row[5] = player_hand.get_value()
+                # Dealer Hand
+                row[6] = dealer_hand.get_value()
+                # Balance
+                row[7] = player.get_bankroll()
+                # Splitted
+                row[8] = 1
+                
+                # Append row to dataframe
+                df.loc[len(df)] = row
+
+                i += 1
         
-        # Dealer hits or stands
-        while dealer_hand.get_value() < 17:
-            dealer_hand.add_card(deck.deal_card())
-        
-        # Conditions
-        if player_hand.get_value() > 21:
-            player.lose()
-            row[1] = 1
-        elif dealer_hand.get_value() > 21:
-            player.win()
-            row[0] = 1
-        elif player_hand.get_value() > dealer_hand.get_value():
-            player.win()
-            row[0] = 1
-        elif player_hand.get_value() == dealer_hand.get_value():
-            player.draw()
-            row[2] = 1
         else:
-            player.lose()
-            row[1] = 1
-        
-        # Play Count
-        row[4] = i + 1
-        # Running Count
-        row[3] = counter.get_running_count()
-        # Player Hand
-        row[5] = player_hand.get_value()
-        # Dealer Hand
-        row[6] = dealer_hand.get_value()
-        # Balance
-        row[7] = player.get_bankroll()
-        
-        # Append row to dataframe
-        df.loc[len(df)] = row
+            
+            # Double bet if applicable
+            if double_down(player_hand, dealer_hand.cards[0], counter.get_running_count()) == True:
+                player.place_bet(bet_size)
+                bet_size += base_bet
+                row[9] = 1
+                
+            # Hit or Stand
+            while player_hand.get_value() < 21:
+                action = hit_or_stand(player_hand, dealer_hand.cards[0], counter.get_running_count())
+                if action:
+                    new_card = deck.deal_card()
+                    player_hand.add_card(new_card)
+                    counter.high_low(new_card)
+                else:
+                    break
+            
+            # Dealer hits or stands
+            while dealer_hand.get_value() < 17:
+                dealer_hand.add_card(deck.deal_card())
+            
+            # Conditions
+            if player_hand.get_value() > 21:
+                player.lose()
+                row[1] = 1
+            elif dealer_hand.get_value() > 21:
+                player.win()
+                row[0] = 1
+            elif player_hand.get_value() > dealer_hand.get_value():
+                player.win()
+                row[0] = 1
+            elif player_hand.get_value() == dealer_hand.get_value():
+                player.draw()
+                row[2] = 1
+            else:
+                player.lose()
+                row[1] = 1
+            
+            # Player's Cards
+            row[10] = str(player_hand.cards[0])
+            row[11] = str(player_hand.cards[1])
+            # Dealer's Upcard
+            row[12] = str(dealer_hand.cards[0])
+            
+            # Play Count
+            row[4] = i + 1
+            # Running Count
+            row[3] = counter.get_running_count()
+            # Player Hand
+            row[5] = player_hand.get_value()
+            # Dealer Hand
+            row[6] = dealer_hand.get_value()
+            # Balance
+            row[7] = player.get_bankroll()
+            
+            # Append row to dataframe
+            df.loc[len(df)] = row
+
+            i += 1
     
     return df
 
-df_info = blackjack_hl_simulator(1000, 1000, 50)
 
-st.pyplot(blackjack_histogram(df_info, 1000))
+df_info = blackjack_hl_simulator(100, 100, 50)
+
+# st.pyplot(blackjack_histogram(df_info, 10))
 
 def blackjack_lineplot(num_plays, starting_bankroll, base_bet, repetitions):
     
@@ -152,7 +227,7 @@ def blackjack_lineplot(num_plays, starting_bankroll, base_bet, repetitions):
     return fig
 
 
-st.pyplot(blackjack_lineplot(1000, 1000, 50, 20))
+# st.pyplot(blackjack_lineplot(1000, 1000, 50, 20))
 
 st.dataframe(df_info)
 
