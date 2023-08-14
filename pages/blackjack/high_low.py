@@ -5,6 +5,7 @@ from packages.blackjack_logic import Deck, CardCounter, Hand, Player, hit_or_sta
 from packages.graphs import blackjack_histogram, styling_configurations
 import pandas as pd
 import matplotlib.pyplot as plt 
+import numpy as np
 
 # Setting page configuration
 st.set_page_config(
@@ -34,13 +35,13 @@ def blackjack_hl_simulator(num_plays, starting_bankroll, base_bet):
     counter = CardCounter()
     player = Player(starting_bankroll)
     
-    df = pd.DataFrame(columns=['Win', 'Loss', 'Draw', 'Running Count', 'Play Count', 'Player Hand Value', 'Dealer Hand Value', 'Balance', 'Splitted', 'Doubled', 'First Card', 'Second Card', 'Dealer Upcard'])
+    df = pd.DataFrame(columns=['Win', 'Loss', 'Draw', 'Running Count', 'Play Count', 'Player Hand Value', 'Dealer Hand Value', 'Balance', 'Splitted', 'Doubled', 'First Card', 'Second Card', 'Dealer Upcard', 'Dealer Facedown'])
 
     i = 0
     while i < num_plays:
 
         # Initialize our row for the dataframe
-        row = [0] * 13
+        row = [0] * 14
         
         # New hands each round
         player_hand = Hand()
@@ -52,7 +53,21 @@ def blackjack_hl_simulator(num_plays, starting_bankroll, base_bet):
             counter.reset_count()
 
         # Set bet size 
-        bet_size = base_bet 
+        if counter.get_running_count() <= 0:
+            bet_size = base_bet 
+        elif counter.get_running_count() == 1:
+            bet_size = base_bet * 2
+        elif counter.get_running_count() == 2:
+            bet_size = base_bet * 4
+        elif counter.get_running_count() == 3:
+            bet_size = base_bet * 6
+        elif counter.get_running_count() == 4:
+            bet_size = base_bet * 8
+        elif counter.get_running_count() == 5:
+            bet_size = base_bet * 10
+        elif counter.get_running_count() >= 6:
+            bet_size = base_bet * 12
+        
         player.place_bet(bet_size)
 
         # Initial Dealing, 2 cards each, assume only the dealer's first card is shown to the player
@@ -111,8 +126,9 @@ def blackjack_hl_simulator(num_plays, starting_bankroll, base_bet):
                 # Player's Cards
                 row[10] = str(split_hand.cards[0])
                 row[11] = str(split_hand.cards[1])
-                # Dealer's Upcard
+                # Dealer's Cards
                 row[12] = str(dealer_hand.cards[0])
+                row[13] = str(dealer_hand.cards[1])
                 
                 # Play Count
                 row[4] = i + 1
@@ -176,6 +192,7 @@ def blackjack_hl_simulator(num_plays, starting_bankroll, base_bet):
             row[11] = str(player_hand.cards[1])
             # Dealer's Upcard
             row[12] = str(dealer_hand.cards[0])
+            row[13] = str(dealer_hand.cards[1])
             
             # Play Count
             row[4] = i + 1
@@ -196,7 +213,7 @@ def blackjack_hl_simulator(num_plays, starting_bankroll, base_bet):
     return df
 
 
-df_info = blackjack_hl_simulator(100, 100, 50)
+df_info = blackjack_hl_simulator(100, 0, 5)
 
 # st.pyplot(blackjack_histogram(df_info, 10))
 
@@ -210,7 +227,7 @@ def blackjack_lineplot(num_plays, starting_bankroll, base_bet, repetitions):
     fig.set_size_inches(10,4)
 
     # Labels
-    ax.set_title("Scatterplot for Number of Plays vs. Ending Balance", color = 'white')
+    ax.set_title("Line Plot for Number of Plays vs. Ending Balance", color = 'white')
     ax.set_xlabel("Number of Plays", color = 'white')
     ax.set_ylabel("Ending Balances", color = 'white')
     
@@ -220,17 +237,41 @@ def blackjack_lineplot(num_plays, starting_bankroll, base_bet, repetitions):
     for label in ax.get_yticklabels():
         label.set_color(color = 'white')
 
-    for _ in range(repetitions):
+    # Create a DataFrame to hold the balances across all repetitions
+    overall_df = pd.DataFrame(columns=['Play Count', 'Balance'])
+
+    for i in range(repetitions):
         df = blackjack_hl_simulator(num_plays, starting_bankroll, base_bet)
         ax.plot(df['Play Count'], df['Balance'])
+        overall_df = pd.concat([overall_df, df[['Play Count', 'Balance']]])
+
+    # Calculate the mean of the balances at each play count
+    overall_df = overall_df.groupby('Play Count', as_index=False).mean()
+    
+    # Perform linear regression on the overall data
+    x = overall_df['Play Count'].astype(float)
+    y = overall_df['Balance'].astype(float)
+    slope, intercept = np.polyfit(x, y, 1)
+
+    # Create x values for the line
+    x_values = np.linspace(min(x), max(x), 100)
+
+    # Compute corresponding y values
+    y_values = slope * x_values + intercept
+
+    # Plot the regression line
+    ax.plot(x_values, y_values, color='r', linestyle='--')
 
     return fig
 
 
-# st.pyplot(blackjack_lineplot(1000, 1000, 50, 20))
+
+
+st.pyplot(blackjack_lineplot(100, 0, 5, 25))
 
 st.dataframe(df_info)
 
 st.write(df_info['Win'].sum())
 st.write(df_info['Loss'].sum())
 st.write(df_info['Draw'].sum())
+st.write(df_info.get('Balance').mean())

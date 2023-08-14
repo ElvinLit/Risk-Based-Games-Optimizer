@@ -12,3 +12,8 @@ st.set_page_config(
 
 # Add page to list of pages
 add_page_title()
+
+st.write("The blackjack simulator serves to mimic a 'perfect' strategy in playing Blackjack. \
+         The game assumes a 6 deck shoe, dealer stands on all 17s, player can double after \
+         splitting, can split up to 4 times, and can surrender. This is one of the most common \
+         rulesets in Vegas.")
