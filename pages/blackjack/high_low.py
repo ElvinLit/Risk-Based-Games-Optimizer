@@ -227,9 +227,9 @@ def blackjack_lineplot(num_plays, starting_bankroll, base_bet, repetitions):
     fig.set_size_inches(10,4)
 
     # Labels
-    ax.set_title("Line Plot for Number of Plays vs. Ending Balance", color = 'white')
+    ax.set_title(u"Line Plot for Number of Plays vs. Δ Balance", color = 'white')
     ax.set_xlabel("Number of Plays", color = 'white')
-    ax.set_ylabel("Ending Balances", color = 'white')
+    ax.set_ylabel("Balance change ($USD)", color = 'white')
     
     styling_configurations(fig, ax)
     for label in ax.get_xticklabels():
@@ -242,7 +242,7 @@ def blackjack_lineplot(num_plays, starting_bankroll, base_bet, repetitions):
 
     for i in range(repetitions):
         df = blackjack_hl_simulator(num_plays, starting_bankroll, base_bet)
-        ax.plot(df['Play Count'], df['Balance'])
+        ax.plot(df['Play Count'], df['Balance'], alpha=0.5)
         overall_df = pd.concat([overall_df, df[['Play Count', 'Balance']]])
 
     # Calculate the mean of the balances at each play count
@@ -260,7 +260,7 @@ def blackjack_lineplot(num_plays, starting_bankroll, base_bet, repetitions):
     y_values = slope * x_values + intercept
 
     # Plot the regression line
-    ax.plot(x_values, y_values, color='r', linestyle='--')
+    ax.plot(x_values, y_values, color='white', linestyle='--')
 
     return fig
 
