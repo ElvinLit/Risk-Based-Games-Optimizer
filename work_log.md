@@ -1,4 +1,5 @@
 # Work Log 
+- test
 ## 7/21
 - Updated theme of webpage to resemble casino colors
 - Changed line graph to scatterplot to accurately reflect discrete data
