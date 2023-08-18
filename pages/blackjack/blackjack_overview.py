@@ -17,3 +17,8 @@ st.write("The blackjack simulator serves to mimic a 'perfect' strategy in playin
          The game assumes a 6 deck shoe, dealer stands on all 17s, player can double after \
          splitting, can split up to 4 times, and can surrender. This is one of the most common \
          rulesets in Vegas.")
+st.write("The algorithm first goes through the 'basic strategy' of Blackjack, which is a \
+         mathematically discovered chart that defines the action a player should take \
+         when the count is zero. While a normal Blackjack game would have a house edge \
+         of around 4%, incorporating basic strategy greatly reduces this to around 0.5%.")
+st.write("Next, ")

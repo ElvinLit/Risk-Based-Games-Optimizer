@@ -84,6 +84,13 @@ class Hand:
         value_without_ace = sum(card.get_value() for card in self.cards if card.value != 'A')
         aces_count = sum(1 for card in self.cards if card.value == 'A')
         return aces_count > 0 and (value_without_ace + aces_count * 11) <= 21
+    
+    def get_cards(self):
+        """Returns a list of the string representations of the cards in the hand."""
+        return [str(card) for card in self.cards]
+    
+    def __str__(self):
+        return f"{self.value}"
 
 
 class CardCounter:
@@ -149,6 +156,7 @@ class CardCounter:
         """Resets the running count to 0."""
         self.running_count = 0
 
+
 class Player:
     """
     Represents a player in the blackjack game.
@@ -179,6 +187,9 @@ class Player:
     def win(self):
         """Adds the bet amount to the bankroll."""
         self.bankroll += self.bet_size * 2
+        
+    def blackjack(self):
+        self.bankroll += (self.bet_size * 2) + (self.bet_size * 3/2)
 
     def lose(self):
         """No action required as the bet has already been placed."""
@@ -202,7 +213,7 @@ class Player:
         self.bet_size = bet_size
         
 
-def should_split(player_hand, dealer_up_card):
+def should_split(player_hand, dealer_up_card, count):
     """Returns True if the player should split the hand."""
     if len(player_hand.cards) != 2 or player_hand.cards[0].value != player_hand.cards[1].value:
         return False
@@ -210,20 +221,81 @@ def should_split(player_hand, dealer_up_card):
     pair_value = player_hand.cards[0].value
     dealer_value = dealer_up_card.get_value()
 
-    if pair_value in ['8', 'A']:
+    if pair_value == 'A':
         return True
-    if pair_value in ['5', '10']:
+    
+    if pair_value in ['J', 'Q', 'K']:
+        if (dealer_value == 6) and (count >= 4):
+            return True
+        if (dealer_value == 5) and (count >= 5):
+            return True
+        if (dealer_value == 4) and (count >= 6):
+            return True
         return False
-    if pair_value in ['2', '3'] and dealer_value in [4, 5, 6, 7]:
+    
+    if pair_value == '9':
+        if dealer_up_card.value in ['7', '10', 'A']:
+            return False
         return True
-    if pair_value == '6' and dealer_value in [3, 4, 5, 6]:
+    
+    if pair_value == '8':
         return True
-    if pair_value == '7' and dealer_value in [2, 3, 4, 5, 6, 7]:
+    
+    if pair_value in ['7', '3', '2']:
+        if dealer_up_card.value in ['8', '9', '10', 'A']:
+            return False
         return True
-    if pair_value == '9' and dealer_value in [2, 3, 4, 5, 6, 8, 9]:
+    
+    if pair_value == '6':
+        if dealer_up_card.value in ['7', '8', '9', '10', 'A']:
+            return False
         return True
-
+            
+    if pair_value == '5':
+        return False
+    
+    if pair_value == '4':
+        if dealer_up_card.value in ['5', '6']:
+            return True
+        return False
+    
     return False
+
+def should_insurance(count):
+    """Returns True or False on if one should surrender"""
+    if count >= 3:
+        return True
+    return False
+
+def should_surrender(player_hand, dealer_up_card, count):
+    """Returns True or False on if one should surrender"""
+    player_value = player_hand.get_value()
+    dealer_value = dealer_up_card.get_value()
+    
+    if player_value == 17:
+        if dealer_up_card.value == 'A':
+            return True
+    if player_value == 16:
+        if dealer_up_card.value in ['10', 'A']:
+            return True
+        if dealer_up_card.value == '9':
+            if count > 1:
+                return True
+        if dealer_up_card.value == '8':
+            if count >= 4:
+                return True
+        return False
+    if player_value == 15:
+        if dealer_up_card.value == '9':
+            if count >= 2:
+                return True
+        if dealer_up_card.value == '10':
+            if count > 0:
+                return True
+        if dealer_up_card.value == 'A':
+            if count < 1:
+                return True
+        return False
 
 
 def split_hands(hand):
@@ -237,7 +309,7 @@ def split_hands(hand):
 
 def hit_or_stand(player_hand, dealer_upcard, count):
     """
-    Follows basic strategy chart integrated with illustrious 18
+    Follows basic strategy chart integrated with illustrious 18, utilizes player and, dealer upcard, and the count to determine hit or stand
 
     Args:
         player_hand (Hand obj)
@@ -252,72 +324,88 @@ def hit_or_stand(player_hand, dealer_upcard, count):
     dealer_value = dealer_upcard.get_value()
     soft_hand = player_hand.is_soft_hand()
 
-    ### Illustrious 18 defined
-    action = illustrious_18(player_value, dealer_value, count)
-    if action is not None:
-        return action
+    # Checks soft hand cases (Ace is present)
+    if soft_hand:
+        # Hit combinations
+        if '9' in player_hand.get_cards():
+            return False
+        
+        if '8' in player_hand.get_cards():
+            if (dealer_upcard.value == '4') and (count >= 3):
+                return True
+            elif (dealer_upcard.value in ['5', '6']) and (count >= 1):
+                return True
+            return False
+        
+        if '7' in player_hand.get_cards():
+            return dealer_upcard.value not in ['7', '8']
+        
+        if '6' in player_hand.get_cards():
+            return (dealer_upcard.value != '2') or (count < 1)
+        return True
 
-    ### Basic Strategy continues if nothing satisfies illustrious 18 
-
-    # Hit on <= 11
+    # Cases when player value <= 11
     if player_value <= 11:
+        if (player_value == 11) and (dealer_upcard.value == 'A') and (count >= 1):
+            return False
+        if (player_value == 10) and (dealer_upcard.value in ['10', 'A']) and (count >= 4):
+            return False
+        if (player_value == 9):
+            if (dealer_upcard.value == '2') and count >= 1:
+                return False
+            if (dealer_upcard.value == '7') and count >= 3:
+                return False
+        if (player_value == 8) and (dealer_upcard.value == '6') and (count >= 2):
+                return False
         return True
     
-    # Checks soft hand case (Ace)
-    if soft_hand:
-        if player_value == 18:
-            return dealer_value in [9, 10, 11]
-        return player_value < 18
-
     # Special cases for 12-16
     if 12 <= player_value <= 16:
-        if 2 <= dealer_value <= 6:
-            return False
-        else: 
+        
+        if player_value == 12:        
+            if dealer_upcard.value == '2' and count >= 3:
+                return False
+            if dealer_upcard.value == '3' and count >= 2:
+                return False
+            if dealer_upcard.value == '4' and count <= 0:
+                return True
+            if dealer_upcard.value in ['5', '6']:
+                return False
             return True
         
+        if player_value == 13:
+            if dealer_upcard.value == '2' and count <= 1:
+                return True
+            if dealer_upcard.value in ['3','4','5','6']:
+                return False
+            return True
+        
+        if player_value == 14:
+            if dealer_upcard.value in ['2','3','4','5','6']:
+                return False
+            return True
+        
+        if player_value == 15:
+            if dealer_upcard.value in ['2','3','4','5','6']:
+                return False
+            else:
+                if (dealer_upcard.value == '10') and (count >= 4):
+                    return False
+                return True
+        
+        if player_value == 16:
+            if dealer_upcard.value in ['2','3','4','5','6']:
+                return False
+            else:
+                if (dealer_upcard.value == '9') and (count >= 4):
+                    return False
+                if (dealer_upcard.value == '10') and (count >= 0):
+                    return False
+                return True
+                    
     # Stand on 17+
     return False
 
-
-def illustrious_18(player_value, dealer_value, count):
-    """
-    Defines illustrious 18 combinations
-    Args:
-        player_value (int): value of the player's cards
-        dealer_value (int): value of the dealer's cards
-        count (int): running count
-    Returns:
-        None, True, or False, represents an action with True being to hit, False being to stand, and None being none of the conditions being met
-    """
-    
-    # (player_value, dealer_value, count, action, operator)
-    rules = [
-        (16, 10, 0, False, '>='),
-        (15, 10, 4, False, '>='),
-        (10, 10, 3, True, '>='),
-        (12, 3, 3, False, '>='),
-        (12, 2, 4, False, '>='),
-        (9, 2, 1, True, '>='),
-        (9, 7, 4, True, '>='),
-        (16, 9, 5, False, '>='),
-        (13, 2, 0, True, '<='),
-        (12, 4, 1, True, '<='),
-        (12, 5, 0, True, '<='),
-        (13, 3, -1, True, '<='),
-    ]
-
-    # Check if the current situation matches any rule
-    for rule in rules:
-        player_val, dealer_val, rule_count, action, comparison = rule
-        if player_value == player_val and dealer_value == dealer_val:
-            if comparison == '>=' and count >= rule_count:
-                return action
-            elif comparison == '<=' and count <= rule_count:
-                return action
-
-    # If no rule matches, return None to indicate no special action
-    return None
 
 def double_down(player_hand, dealer_upcard, count):
     player_value = player_hand.get_value()
