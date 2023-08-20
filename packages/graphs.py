@@ -341,34 +341,6 @@ def stats_table(df, initial_balance):
 
     return stats_table
 
-def blackjack_histogram(df, num_plays):
-    
-    wins = df['Win'].sum()
-    losses = df['Loss'].sum()
-    draws = df['Draw'].sum()
 
-    categories = ['Wins', 'Losses', 'Draws']
-    values = [wins, losses, draws]
-
-    # Plotting configurations
-    fig, ax = plt.subplots()
-    styling_configurations(fig, ax)
-
-    # Setting size 
-    fig.set_size_inches(10,4)
-
-    # Setting general colors and title
-    ax.bar(categories, values, color='white', edgecolor='black')
-
-    # Labels
-    ax.set_title("Bar Chart for wins, losses, and draws in 1 game, n = " + str(num_plays), color = 'white')
-    ax.set_xlabel("Ending Balance", color = 'white')
-    ax.set_ylabel("Frequency", color = 'white')
-    for label in ax.get_xticklabels():
-        label.set_color('white')
-    for label in ax.get_yticklabels():
-        label.set_color(color = 'white')
-
-    return fig
 
 
