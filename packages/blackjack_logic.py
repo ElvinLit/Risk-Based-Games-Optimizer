@@ -3,9 +3,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error
 
 from packages.graphs import styling_configurations
 
@@ -225,7 +224,7 @@ class Player:
     def set_bet_size(self, bet_size):
         """Sets the bet size for the next hand."""
         self.bet_size = bet_size
-        
+
 
 def should_split(player_hand, dealer_up_card, count):
     """Returns True if the player should split the hand."""
@@ -441,7 +440,8 @@ def double_down(player_hand, dealer_upcard, count):
     # If no rule matches, return False to indicate no special action
     return False
 
-def blackjack_hl_simulator(num_plays, starting_bankroll, base_bet):
+
+def blackjack_simulator(num_plays, starting_bankroll, base_bet, counting_strategy):
     """
     Simulates a Blackjack game using the high low counting strategy. 
     Args:
@@ -455,6 +455,8 @@ def blackjack_hl_simulator(num_plays, starting_bankroll, base_bet):
     deck = Deck()
     counter = CardCounter()
     player = Player(starting_bankroll)
+    
+    counting_method = getattr(counter, counting_strategy)
     
     df = pd.DataFrame(columns=['Win', 'Loss', 'Draw', 'Running Count', 'Play Count', 'Player Hand Value', 'Dealer Hand Value', 'Balance', 'Splitted', 'Doubled', 'First Card', 'Second Card', 'Dealer Upcard', 'Blackjack'])
 
@@ -482,9 +484,9 @@ def blackjack_hl_simulator(num_plays, starting_bankroll, base_bet):
             player_hand.add_card(player_card)
             dealer_hand.add_card(dealer_card)
 
-            counter.high_low(player_card)
+            counting_method(player_card)
             if j == 0:
-                counter.high_low(dealer_card)
+                counting_method(dealer_card)
         
         if should_split(player_hand, dealer_hand.cards[0], counter.get_running_count()) == True:
             # Place second bet
@@ -523,7 +525,7 @@ def blackjack_hl_simulator(num_plays, starting_bankroll, base_bet):
                     if action:
                         new_card = deck.deal_card()
                         split_hand.add_card(new_card)
-                        counter.high_low(new_card)
+                        counting_method(new_card)
                     else:
                         break
                 
@@ -586,7 +588,7 @@ def blackjack_hl_simulator(num_plays, starting_bankroll, base_bet):
             if double_bool == True:
                 double_new_card = deck.deal_card()
                 player_hand.add_card(double_new_card)
-                counter.high_low(double_new_card)
+                counting_method(double_new_card)
             
             # Hit or Stand
             while (player_hand.get_value() < 21) and (double_bool == False):
@@ -594,7 +596,7 @@ def blackjack_hl_simulator(num_plays, starting_bankroll, base_bet):
                 if action:
                     new_card = deck.deal_card()
                     player_hand.add_card(new_card)
-                    counter.high_low(new_card)
+                    counting_method(new_card)
                 else:
                     break
             
@@ -647,8 +649,7 @@ def blackjack_hl_simulator(num_plays, starting_bankroll, base_bet):
     
     return df
 
-
-def blackjack_lineplot(num_plays, starting_bankroll, base_bet, repetitions, simulator):
+def blackjack_lineplot(num_plays, starting_bankroll, base_bet, repetitions, strategy):
     
     # Plotting configurations
     fig, ax = plt.subplots()
@@ -672,7 +673,7 @@ def blackjack_lineplot(num_plays, starting_bankroll, base_bet, repetitions, simu
     overall_df = pd.DataFrame(columns=['Play Count', 'Balance', 'Win', 'Loss', 'Draw'])
 
     for _ in range(repetitions):
-        df = simulator(num_plays, starting_bankroll, base_bet)
+        df = blackjack_simulator(num_plays, starting_bankroll, base_bet, strategy)
         ax.plot(df['Play Count'], df['Balance'], alpha=0.5)
         overall_df = pd.concat([overall_df, df[['Play Count', 'Balance', 'Win', 'Loss', 'Draw']]])
 
@@ -715,6 +716,8 @@ def blackjack_barchart(df, num_plays, repetitions):
     # Setting general colors and title
     ax.bar(categories, values, color='white', edgecolor='black')
 
+    bars = ax.bar(categories, values, color='white', edgecolor='black')
+
     # Labels
     ax.set_title(f"Average results with {num_plays} plays, n = {repetitions}", color = 'white')
     ax.set_ylabel("Frequency", color = 'white')
@@ -723,7 +726,13 @@ def blackjack_barchart(df, num_plays, repetitions):
     for label in ax.get_yticklabels():
         label.set_color(color = 'white')
 
+    for bar, value in zip(bars, values):
+        height = bar.get_height()
+        ax.text(bar.get_x() + bar.get_width() / 2, height, round(value, 2), 
+                ha='center', va='bottom', color='red')
+
     return fig
+
 
 def blackjack_distribution(df, num_plays, repeats):
     data = df[df.get('Play Count') == num_plays]
@@ -751,20 +760,27 @@ def blackjack_distribution(df, num_plays, repeats):
 
     ax.axvline(x=average_balance, color='red', linestyle='--')
 
+    # Displaying the average balance on the top left
+    ax.text(0.05, 0.95, f'Average Balance: ${average_balance:.2f}', transform=ax.transAxes, 
+            color='red', verticalalignment='top')
+
     return fig
 
-def random_forest_regressor(df):
+
+def regressor(df):
     
-    X = df[['Play Count']]
+    X = df[['Play Count']].values
     y = df['Balance']
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    
+    # Assign weights as inverse of variance
+    weights = 1 / (y_train.var())
 
-    model = RandomForestRegressor(n_estimators=100, random_state=42)
-    model.fit(X_train, y_train)
+    model = LinearRegression() 
+    model.fit(X_train, y_train, sample_weight=weights)
 
+    # Predict each x value
     y_pred = model.predict(X_test)
 
-    mse = mean_squared_error(y_test, y_pred)
-
-    return model, mse
+    return model

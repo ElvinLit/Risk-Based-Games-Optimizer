@@ -1,7 +1,7 @@
 import streamlit as st
 from st_pages import add_page_title
 
-from packages.blackjack_logic import blackjack_hl_simulator, blackjack_lineplot, blackjack_barchart, blackjack_distribution, random_forest_regressor
+from packages.blackjack_logic import blackjack_simulator, blackjack_lineplot, blackjack_barchart, blackjack_distribution, regressor
 
 import random
 import pandas as pd
@@ -38,6 +38,11 @@ with col1:
              result. The simulations are designed to imitate perfect counting with hi-lo, and the player's actions \
              reflect that of 'basic strategy' and the illustrious 18, which define deviations from basic strategy \
              depending on the count.")
+    st.write("We have other strategies present, such as Zen, which assigns a count of -1 to Aces, -2 to 10s and face cards, 0 to 8s and 9s\
+             +1 to 2s, 3s, 7s, and +2 to 4s, 5s, and 6s.")
+    st.write("Finally, the Halves strategy assigns a count of -1 to 10s and face cards, -0.5 to 9s, 0 to 8s, +0.5 to 2s and 7s, +1 to 3s, 4s, 5, \
+             and +1.5 to 5s.")
+
 with col2:
     with st.form(key='parameters'):
         with st.container():
@@ -45,9 +50,16 @@ with col2:
             starting_balance = st.slider('Starting Balance', min_value=10, max_value=1000, value=0, step=10, help="Set the starting balance")
             initial_bet = st.slider("Initial Bet", min_value=1, max_value=1000, value=10, step=1, help="Set the initial bet that you will build on")
             repeats = st.slider("Sample repetitions", min_value=10, max_value=1000, value=100, step=10, help="Set the **n** size for the number of samples")
+            strategy_options = st.selectbox('Choose a strategy', ('High Low', 'Zen', 'Halves'))
+            if strategy_options == 'High Low':
+                strategy_options = "high_low"
+            if strategy_options == 'Zen':
+                strategy_options = "zen"
+            if strategy_options == 'Halves':
+                strategy_options = "halves"
         st.form_submit_button(label="Generate")
     
-df_info_mc = blackjack_lineplot(num_plays, starting_balance, initial_bet, repeats, blackjack_hl_simulator)
+df_info_mc = blackjack_lineplot(num_plays, starting_balance, initial_bet, repeats, strategy_options)
 
 st.pyplot(df_info_mc[0])
 
@@ -66,10 +78,9 @@ st.write("Through Monte Carlo simulations, we are able to roughly estimate the e
          play given our parameters. To do so, we first utilize a regression model to fit our numerous simulations \
          and capture the relationship between the play count and balance. As evident by the graph, the variance \
          increases as the play count increases. This effect is known as heteroscedasticity, and thus we cannot \
-         use a purely linear model to fit our data. As such, I chose a random forest regressor for this \
-         scenario, which combines the results of multiple decision trees into one result, thereby mimicking \
-         the behavior of our simulations. After training this regressor, the user may input a play count to return \
-         an expected value at that play count.")
+         use an ordinary least squares (OLS) linear model to fit our data. As such, I chose a weighted least squares (WLS) regressor for this \
+         scenario, which places less weight on observations at a higher variance. After training this regressor, \
+         the user may input a play count to return an expected value at that play count.")
 
 col5, col6 = st.columns([1,1])
 with col5:
@@ -80,4 +91,4 @@ with col5:
         predictor_button = st.form_submit_button(label="Predict")
 
     if predictor_button:
-        st.write(f"Your experimental returns at {predictor_count} plays is ${round(random_forest_regressor(df_info_mc[1])[0].predict([[predictor_count]])[0], 2)}")
+        st.write(f"Your experimental returns at {predictor_count} plays is ${round(regressor(df_info_mc[1]).predict([[predictor_count]])[0], 2)}")

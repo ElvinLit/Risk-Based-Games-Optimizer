@@ -15,9 +15,7 @@ show_pages(
         Page("pages/roulette/dalembert.py", "D'Alembert System", "📖"),
         Section(name = "Blackjack Counting Strategies"),
         Page("pages/blackjack/blackjack_overview.py", "About", '❔'),
-        Page("pages/blackjack/high_low.py", "High Low", ":flower_playing_cards:"),
-        Page("pages/blackjack/zen.py", "Zen", ":flower_playing_cards:"),
-        Page("pages/blackjack/halves.py", "Halves", ":flower_playing_cards:")
+        Page("pages/blackjack/strategy_explorer.py", "Strategy Explorer", ":flower_playing_cards:")
     ]
 )
 
