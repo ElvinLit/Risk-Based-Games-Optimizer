@@ -13,12 +13,20 @@ st.set_page_config(
 # Add page to list of pages
 add_page_title()
 
-st.write("The blackjack simulator serves to mimic a 'perfect' strategy in playing Blackjack. \
-         The game assumes a 6 deck shoe, dealer stands on all 17s, player can double after \
-         splitting, can split up to 4 times, and can surrender. This is one of the most common \
-         rulesets in Vegas.")
-st.write("The algorithm first goes through the 'basic strategy' of Blackjack, which is a \
-         mathematically discovered chart that defines the action a player should take \
-         when the count is zero. While a normal Blackjack game would have a house edge \
-         of around 4%, incorporating basic strategy greatly reduces this to around 0.5%.")
-st.write("Next, ")
+st.markdown(
+    """
+    <style>
+    .custom-subheader {
+        text-align: center; 
+        font-family: monospace
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,)
+st.markdown('<h2 class="custom-subheader">Blackjack Overview</h2>', unsafe_allow_html=True)
+
+st.write("Our web app runs Monte Carlo simulations on popular blackjack strategies: High-Low, Halves, and Zen. \
+         Using basic strategy and deviation charts, we simulate game scenarios to see how each strategy might play out over time. \
+         You'll get clear, easy-to-understand stats on ending balances from these simulations. Plus, if you're curious about how a \
+         certain strategy might perform over a specific number of plays, our built-in regression model can give you a prediction. \
+         Whether you're a seasoned player or just curious about blackjack, our tool offers insights to help you understand the game better.")
