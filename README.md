@@ -1,5 +1,5 @@
 # GameTheoryAnalysis
-Web App that simulates data-centric or probability-based strategies for popular games, visualizing their returns and optimizing parameters.
+Web App that simulates data-centric or probability-based strategies for popular games, visualizing their returns and optimizing parameters. Currently holds support for Blackjack and Roulette. Contains a Jupyter Notebook for a compressed version of Blackjack strategy analysis.
 
 ## Team Members
 1. Elvin Li
